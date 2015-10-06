@@ -33,7 +33,7 @@ public class MyButton extends Button {
             case MotionEvent.ACTION_UP:
                 long duration = (System.currentTimeMillis() - start);
                 System.out.println(event.getAction());
-                if (duration > 1000)
+                if (duration > 300)
                     return true;
                 break;
             default:

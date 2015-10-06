@@ -1,38 +1,40 @@
 package com.example.midori.writer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.TextView;
-import android.view.MotionEvent;
-import android.view.View;
 
 
-public class MainActivity extends Activity {
+public class RootActivity extends Activity {
 
-    MyButton menu,config;
-
+    MyButton mainButton,configButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_default);
 
-        menu = (MyButton) findViewById(R.id.button);
-        config = (MyButton) findViewById(R.id.button4);
-        config.setOnTouchListener(new View.OnTouchListener() {
+        TreeNode root = new TreeNode("root");
+        TreeNode main = root.addChild("main");
+        TreeNode config =  root.addChild("config");
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (config.isSafeTouch(event)) {
-                    Intent conf = new Intent(v.getContext(), ConfigurationActivity.class);
-                    startActivity(conf);
-                }
-                return true;
-            }
-        });
+        mainButton = (MyButton) findViewById(R.id.button);
+        configButton = (MyButton) findViewById(R.id.button2);
+        mainButton.setText((CharSequence) main.data);
+        configButton.setText((CharSequence) config.data);
+
+        
+//        configButton.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (configButton.isSafeTouch(event)) {
+//                    Intent conf = new Intent(v.getContext(), ConfigurationActivity.class);
+//                    startActivity(conf);
+//                }
+//                return true;
+//            }
+//        });
     }
 
 

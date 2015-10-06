@@ -15,7 +15,16 @@
         android:layout_marginTop="154dp"
         android:layout_alignParentStart="true"
         android:backgroundTint="#ffffff"
-        android:layout_toStartOf="@+id/button4" />
+        android:layout_toStartOf="@+id/button2" />
+
+    <com.example.midori.writer.MyButton
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:text="Configura"
+        android:id="@+id/button2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_alignTop="@+id/button" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -29,13 +38,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/activity_horizontal_margin" />
 
-    <com.example.midori.writer.MyButton
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:text="Configura"
-        android:id="@+id/button4"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/textView"
-        android:layout_alignTop="@+id/button" />
+
 
 </RelativeLayout>
