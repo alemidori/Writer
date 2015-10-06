@@ -1,54 +1,56 @@
 package com.example.midori.writer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-//Menu dell'applicazione: contiene la visualizzazione di default (2 pulsanti) delle funzionalità principali (Lettere, Frasi e Comdandi)
-public class RootActivity extends Activity {
-
-    public MyButton mainButton, configButton;
-    public static TreeNode root, main, config, lettere, frasi, comandi, tocco, disabilita, breve, medio, lungo, audio, muto, basso, alto; //...
-
+/**
+ * Created by Alessandra on 06/10/15.
+ */
+public class ConfigActivity extends Activity {
+    MyButton selectableButton,nextButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
-        root = new TreeNode("root");
-        main = root.addChild("main");
-        config = root.addChild("config");
+        selectableButton = (MyButton) findViewById(R.id.button);
+        nextButton = (MyButton) findViewById(R.id.button2);
 
-        lettere = main.addChild("lettere");
-        frasi = main.addChild("frasi");
-        comandi = main.addChild("comandi");
+        TreeNode first = (TreeNode) RootActivity.config.children.get(0);
+        selectableButton.setText((CharSequence) first.data);
+        nextButton.setText("->");
 
-        lettere.addChild("A");
-        lettere.addChild("B");
-        lettere.addChild("C");
+        selectableButton.setOnTouchListener(new View.OnTouchListener() {
 
-        //popolare l'albero con gli altri nodi
-
-        mainButton = (MyButton) findViewById(R.id.button);
-        configButton = (MyButton) findViewById(R.id.button2);
-        mainButton.setText((CharSequence) main.data);
-        configButton.setText((CharSequence) config.data);
-
-        mainButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MyButton.isSafeTouch(event)) {
-                    Intent main = new Intent(v.getContext(), LayoutActivity.class);
-                    startActivity(main);
+                    //da definire
+                }
+                return true;
+            }
+        });
+
+        nextButton.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MyButton.isSafeTouch(event)) {
+                    int i;
+                    for(i=0;i<RootActivity.config.children.size(); i++){
+
+                    }
+
                 }
                 return true;
             }
         });
     }
+
 
 
     @Override

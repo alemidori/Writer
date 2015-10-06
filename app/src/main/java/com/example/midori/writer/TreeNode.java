@@ -30,6 +30,9 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
         return childNode;
     }
 
+    public boolean isInternalNode(){
+        return !this.children.isEmpty();
+    }
     
 
 }

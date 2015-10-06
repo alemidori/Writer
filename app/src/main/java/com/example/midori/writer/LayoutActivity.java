@@ -1,45 +1,82 @@
 package com.example.midori.writer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+
+import java.util.Objects;
 
 /**
  * Created by Alessandra on 06/10/15.
  */
 public class LayoutActivity extends Activity {
-    MyButton selectableButton,nextButton;
+    MyButton selectableButton, nextButton;
+    TreeNode first, actual;
+    int i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
-        TreeNode main = new TreeNode("main");
-        TreeNode lettere = main.addChild("lettere");
-        //InternalNode frasi = (InternalNode) main.addChild("frasi");
-        //InternalNode comandi = (InternalNode) main.addChild("comandi");
-
         selectableButton = (MyButton) findViewById(R.id.button);
         nextButton = (MyButton) findViewById(R.id.button2);
 
-        //TreeNode first = (TreeNode) main.children.get(0);
+        first = (TreeNode) RootActivity.main.children.get(0);
+        actual = first;
+        selectableButton.setText((CharSequence) first.data);
+        nextButton.setText("->");
+        i = 0;
 
-       // selectableButton.setText((CharSequence) first.data);
+        selectableButton.setOnTouchListener(new View.OnTouchListener() {
 
-//        configButton.setOnTouchListener(new View.OnTouchListener() {
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (configButton.isSafeTouch(event)) {
-//                    Intent conf = new Intent(v.getContext(), ConfigurationActivity.class);
-//                    startActivity(conf);
-//                }
-//                return true;
-//            }
-//        });
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MyButton.isSafeTouch(event)) {
+                    if (Objects.equals(selectableButton.getText(), "^")) {
+                        actual = actual.parent;
+                        selectableButton.setText((CharSequence) actual.data);
+                    }
+                    if (actual.isInternalNode()) {
+                        actual = (TreeNode) actual.children.get(0);
+                        selectableButton.setText((CharSequence) actual.data);
+                    } else {
+                        //action
+                    }
+                }
+                return true;
+            }
+        });
+
+        nextButton.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MyButton.isSafeTouch(event)) {
+                    TreeNode next;
+                    if (Objects.equals(selectableButton.getText(), "^")) {
+                        i = 0;
+                        next = (TreeNode) RootActivity.main.children.get(i);
+                        actual = next;
+                        selectableButton.setText((CharSequence) next.data);
+                    } else if (i < RootActivity.main.children.size() - 1) {
+                        next = (TreeNode) RootActivity.main.children.get(i + 1);
+                        actual = next;
+                        selectableButton.setText((CharSequence) next.data);
+                        i++;
+                    } else {
+                        selectableButton.setText("^");
+                    }
+
+                }
+                return true;
+            }
+        });
     }
-
 
 
     @Override
@@ -63,4 +100,6 @@ public class LayoutActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

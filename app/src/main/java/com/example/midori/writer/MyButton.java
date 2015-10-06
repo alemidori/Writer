@@ -9,7 +9,7 @@ import android.widget.Button;
  * Created by Alessandra on 06/10/15.
  */
 public class MyButton extends Button {
-    long start;
+    public static long start;
 
     public MyButton(Context context) {
         super(context);
@@ -23,7 +23,7 @@ public class MyButton extends Button {
         super(context, attrs, defStyle);
     }
     
-    public boolean isSafeTouch(MotionEvent event) {
+    public static boolean isSafeTouch(MotionEvent event) {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
