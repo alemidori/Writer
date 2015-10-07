@@ -3,6 +3,7 @@ package com.example.midori.writer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,12 +40,17 @@ public class LayoutActivity extends Activity {
                 if (MyButton.isSafeTouch(event)) {
                     if (Objects.equals(selectableButton.getText(), "^")) {
                         actual = actual.parent;
+                        i= actual.parent.children.indexOf(actual);
+                        Log.d("1", (String) actual.data);
                         selectableButton.setText((CharSequence) actual.data);
                     }
-                    if (actual.isInternalNode()) {
+                    else if (actual.isInternalNode()) {
                         actual = (TreeNode) actual.children.get(0);
+                        i=0;
+                        Log.d("1", (String) actual.data);
                         selectableButton.setText((CharSequence) actual.data);
                     } else {
+                        selectableButton.setText((CharSequence) actual.data);
                         //action
                     }
                 }
@@ -60,14 +66,15 @@ public class LayoutActivity extends Activity {
                     TreeNode next;
                     if (Objects.equals(selectableButton.getText(), "^")) {
                         i = 0;
-                        next = (TreeNode) RootActivity.main.children.get(i);
+                        next = (TreeNode) actual.parent.children.get(i);
                         actual = next;
-                        selectableButton.setText((CharSequence) next.data);
-                    } else if (i < RootActivity.main.children.size() - 1) {
-                        next = (TreeNode) RootActivity.main.children.get(i + 1);
-                        actual = next;
-                        selectableButton.setText((CharSequence) next.data);
+                        selectableButton.setText((CharSequence) actual.data);
+                    } else if (i < actual.parent.children.size() - 1) {
+                        Log.d("1", (String) actual.parent.data);
                         i++;
+                        next = (TreeNode) actual.parent.children.get(i);
+                        actual = next;
+                        selectableButton.setText((CharSequence) actual.data);
                     } else {
                         selectableButton.setText("^");
                     }

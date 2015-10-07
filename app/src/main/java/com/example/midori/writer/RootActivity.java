@@ -31,6 +31,9 @@ public class RootActivity extends Activity {
         lettere.addChild("B");
         lettere.addChild("C");
 
+        frasi.addChild("Hello world!");
+        frasi.addChild("ababababa");
+
         //popolare l'albero con gli altri nodi
 
         mainButton = (MyButton) findViewById(R.id.button);
