@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.Objects;
 
@@ -16,6 +17,8 @@ import java.util.Objects;
  * Created by Alessandra on 06/10/15.
  */
 public class LayoutActivity extends Activity {
+    TreeNode activ;
+    TextView topText;
     MyButton selectableButton, nextButton;
     TreeNode first, actual;
     int i;
@@ -25,14 +28,31 @@ public class LayoutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
+        final Intent rootActivity = getIntent();
+        final int activity = rootActivity.getExtras().getInt("activity");
+
         selectableButton = (MyButton) findViewById(R.id.button);
         nextButton = (MyButton) findViewById(R.id.button2);
+        topText = (TextView) findViewById(R.id.textView);
         selectableButton.setBackgroundColor(Color.GRAY);
         nextButton.setBackgroundColor(Color.GRAY);
 
-        first = (TreeNode) RootActivity.main.children.get(0);
+        switch (activity) {
+            case 1:
+                activ = Tree.main;
+                break;
+            case 2:
+                activ = Tree.config;
+                break;
+            default:
+                System.out.println("Activity non specificata");
+                break;
+        }
+
+        first = (TreeNode) activ.children.get(0);
         actual = first;
-        selectableButton.setText((CharSequence) first.data);
+        selectableButton.setText((CharSequence) actual.data);
+        topText.setText((CharSequence) actual.parent.data);
         nextButton.setText("->");
         i = 0;
 
@@ -43,14 +63,26 @@ public class LayoutActivity extends Activity {
                 if (selectableButton.isSafeTouch(event)) {
 
                     if (Objects.equals(selectableButton.getText(), "^")) {
+
+                        if (Objects.equals(topText.getText().toString(), "main") || Objects.equals(topText.getText().toString(), "config")) {
+                            Intent backToRoot = new Intent(LayoutActivity.this, RootActivity.class);
+                            startActivity(backToRoot);
+                        }
+                        else {
+                            topText.setText(topText.getText().toString().replace(" > " + actual.parent.data, ""));
+                        }
                         actual = actual.parent;
-                        i= actual.parent.children.indexOf(actual);
+                        i = actual.parent.children.indexOf(actual);
                         Log.d("1", (String) actual.data);
                         selectableButton.setText((CharSequence) actual.data);
-                    }
-                    else if (actual.isInternalNode()) {
+
+                    } else if (actual.isInternalNode()) {
+                        if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
+                            topText.setText((CharSequence) actual.data);
+                        else
+                            topText.append(" > " + actual.data);
                         actual = (TreeNode) actual.children.get(0);
-                        i=0;
+                        i = 0;
                         Log.d("1", (String) actual.data);
                         selectableButton.setText((CharSequence) actual.data);
                     } else {
@@ -88,7 +120,6 @@ public class LayoutActivity extends Activity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

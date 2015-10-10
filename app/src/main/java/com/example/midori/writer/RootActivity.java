@@ -13,34 +13,18 @@ import android.view.View;
 public class RootActivity extends Activity {
 
     public MyButton mainButton, configButton;
-    public static TreeNode root, main, config, lettere, frasi, comandi, tocco, disabilita, breve, medio, lungo, audio, muto, basso, alto; //...
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
-        root = new TreeNode("root");
-        main = root.addChild("main");
-        config = root.addChild("config");
-
-        lettere = main.addChild("lettere");
-        frasi = main.addChild("frasi");
-        comandi = main.addChild("comandi");
-
-        lettere.addChild("A");
-        lettere.addChild("B");
-        lettere.addChild("C");
-
-        frasi.addChild("Hello world!");
-        frasi.addChild("ababababa");
-
-        //popolare l'albero con gli altri nodi
+        Tree.populate();
 
         mainButton = (MyButton) findViewById(R.id.button);
         configButton = (MyButton) findViewById(R.id.button2);
-        mainButton.setText((CharSequence) main.data);
-        configButton.setText((CharSequence) config.data);
+        mainButton.setText((CharSequence) Tree.main.data);
+        configButton.setText((CharSequence) Tree.config.data);
         mainButton.setBackgroundColor(Color.GRAY);
         configButton.setBackgroundColor(Color.GRAY);
 
@@ -50,6 +34,19 @@ public class RootActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (mainButton.isSafeTouch(event)) {
                     Intent main = new Intent(v.getContext(), LayoutActivity.class);
+                    main.putExtra("activity", 1);
+                    startActivity(main);
+                }
+                return true;
+            }
+        });
+
+        configButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (configButton.isSafeTouch(event)) {
+                    Intent main = new Intent(v.getContext(), LayoutActivity.class);
+                    main.putExtra("activity", 2);
                     startActivity(main);
                 }
                 return true;
