@@ -28,7 +28,7 @@ public class ConfigActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MyButton.isSafeTouch(event)) {
+                if (selectableButton.isSafeTouch(event)) {
                     //da definire
                 }
                 return true;
@@ -39,7 +39,7 @@ public class ConfigActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MyButton.isSafeTouch(event)) {
+                if (nextButton.isSafeTouch(event)) {
                     int i;
                     for(i=0;i<RootActivity.config.children.size(); i++){
 

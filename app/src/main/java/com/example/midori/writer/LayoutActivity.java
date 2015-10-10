@@ -2,6 +2,7 @@ package com.example.midori.writer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,8 @@ public class LayoutActivity extends Activity {
 
         selectableButton = (MyButton) findViewById(R.id.button);
         nextButton = (MyButton) findViewById(R.id.button2);
+        selectableButton.setBackgroundColor(Color.GRAY);
+        nextButton.setBackgroundColor(Color.GRAY);
 
         first = (TreeNode) RootActivity.main.children.get(0);
         actual = first;
@@ -37,7 +40,8 @@ public class LayoutActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MyButton.isSafeTouch(event)) {
+                if (selectableButton.isSafeTouch(event)) {
+
                     if (Objects.equals(selectableButton.getText(), "^")) {
                         actual = actual.parent;
                         i= actual.parent.children.indexOf(actual);
@@ -62,7 +66,7 @@ public class LayoutActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MyButton.isSafeTouch(event)) {
+                if (nextButton.isSafeTouch(event)) {
                     TreeNode next;
                     if (Objects.equals(selectableButton.getText(), "^")) {
                         i = 0;

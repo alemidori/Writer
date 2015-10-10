@@ -2,6 +2,7 @@ package com.example.midori.writer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,11 +41,14 @@ public class RootActivity extends Activity {
         configButton = (MyButton) findViewById(R.id.button2);
         mainButton.setText((CharSequence) main.data);
         configButton.setText((CharSequence) config.data);
+        mainButton.setBackgroundColor(Color.GRAY);
+        configButton.setBackgroundColor(Color.GRAY);
+
 
         mainButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MyButton.isSafeTouch(event)) {
+                if (mainButton.isSafeTouch(event)) {
                     Intent main = new Intent(v.getContext(), LayoutActivity.class);
                     startActivity(main);
                 }
