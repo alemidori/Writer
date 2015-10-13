@@ -1,0 +1,8 @@
+{
+  "touch": "short",
+  "sound": "low",
+  "layout": [
+    {"num_puls": "2"},
+    {"orient": "portrait"}
+  ]
+}

@@ -19,35 +19,39 @@ import java.util.Objects;
 public class LayoutActivity extends Activity {
     TreeNode activ;
     TextView topText;
-    MyButton selectableButton, nextButton;
+    MyButton selectableButton, nextButton, saveButton;
     TreeNode first, actual;
     int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_default);
 
         final Intent rootActivity = getIntent();
         final int activity = rootActivity.getExtras().getInt("activity");
+
+        switch (activity) {
+            case 1:
+                setContentView(R.layout.activity_default);
+                activ = Tree.main;
+                break;
+            case 2:
+                setContentView(R.layout.configuration_activity);
+                saveButton = (MyButton) findViewById(R.id.button3);
+                saveButton.setBackgroundColor(Color.GRAY);
+                activ = Tree.config;
+                break;
+            default:
+                setContentView(R.layout.activity_default);
+                System.out.println("Activity non specificata");
+                break;
+        }
 
         selectableButton = (MyButton) findViewById(R.id.button);
         nextButton = (MyButton) findViewById(R.id.button2);
         topText = (TextView) findViewById(R.id.textView);
         selectableButton.setBackgroundColor(Color.GRAY);
         nextButton.setBackgroundColor(Color.GRAY);
-
-        switch (activity) {
-            case 1:
-                activ = Tree.main;
-                break;
-            case 2:
-                activ = Tree.config;
-                break;
-            default:
-                System.out.println("Activity non specificata");
-                break;
-        }
 
         first = (TreeNode) activ.children.get(0);
         actual = first;
@@ -86,8 +90,7 @@ public class LayoutActivity extends Activity {
                         Log.d("1", (String) actual.data);
                         selectableButton.setText((CharSequence) actual.data);
                     } else {
-                        selectableButton.setText((CharSequence) actual.data);
-                        //action
+
                     }
                 }
                 return true;

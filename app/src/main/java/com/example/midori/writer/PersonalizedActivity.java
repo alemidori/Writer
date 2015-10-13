@@ -9,36 +9,15 @@ import android.view.MenuItem;
  */
 public class PersonalizedActivity extends LayoutActivity {
 
-   public MyButton mainButton,configButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
 
-        TreeNode root = new TreeNode("root");
-        TreeNode main = root.addChild("main");
-        TreeNode config = root.addChild("config");
 
-        mainButton = (MyButton) findViewById(R.id.button);
-        configButton = (MyButton) findViewById(R.id.button2);
-        mainButton.setText((CharSequence) main.data);
-        configButton.setText((CharSequence) config.data);
 
-//        configButton.setOnTouchListener(new View.OnTouchListener() {
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (configButton.isSafeTouch(event)) {
-//                    Intent conf = new Intent(v.getContext(), ConfigurationActivity.class);
-//                    startActivity(conf);
-//                }
-//                return true;
-//            }
-//        });
+
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

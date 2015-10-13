@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-//Menu dell'applicazione: contiene la visualizzazione di default (2 pulsanti) delle funzionalità principali (Lettere, Frasi e Comdandi)
 public class RootActivity extends Activity {
 
     public MyButton mainButton, configButton;
