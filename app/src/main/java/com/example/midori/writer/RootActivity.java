@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+
+//TODO posso fare una singola activity per tutto
+
 public class RootActivity extends Activity {
 
-    public MyButton mainButton, configButton;
+    public SafeButton mainButton, configButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,34 +24,30 @@ public class RootActivity extends Activity {
 
         Tree.populate();
 
-        mainButton = (MyButton) findViewById(R.id.button);
-        configButton = (MyButton) findViewById(R.id.button2);
+        mainButton = (SafeButton) findViewById(R.id.button);
+        configButton = (SafeButton) findViewById(R.id.button2);
         mainButton.setText((CharSequence) Tree.main.data);
         configButton.setText((CharSequence) Tree.config.data);
         mainButton.setBackgroundColor(Color.GRAY);
         configButton.setBackgroundColor(Color.GRAY);
 
 
-        mainButton.setOnTouchListener(new View.OnTouchListener() {
+        mainButton.setOnSafeTapListener(new SafeTapListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mainButton.isSafeTouch(event)) {
-                    Intent main = new Intent(v.getContext(), LayoutActivity.class);
-                    main.putExtra("activity", 1);
-                    startActivity(main);
-                }
+            public boolean onSafeTap(SafeButton safeButton) {
+                Intent main = new Intent(safeButton.getContext(), LayoutActivity.class);
+                main.putExtra("activity", 1);
+                startActivity(main);
                 return true;
             }
         });
 
-        configButton.setOnTouchListener(new View.OnTouchListener() {
+        configButton.setOnSafeTapListener(new SafeTapListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (configButton.isSafeTouch(event)) {
-                    Intent main = new Intent(v.getContext(), LayoutActivity.class);
-                    main.putExtra("activity", 2);
-                    startActivity(main);
-                }
+            public boolean onSafeTap(SafeButton safeButton) {
+                Intent main = new Intent(safeButton.getContext(), LayoutActivity.class);
+                main.putExtra("activity", 2);
+                startActivity(main);
                 return true;
             }
         });

@@ -19,7 +19,7 @@ import java.util.Objects;
 public class LayoutActivity extends Activity {
     TreeNode activ;
     TextView topText;
-    MyButton selectableButton, nextButton, saveButton;
+    SafeButton selectableButton, nextButton, saveButton;
     TreeNode first, actual;
     int i;
 
@@ -37,7 +37,7 @@ public class LayoutActivity extends Activity {
                 break;
             case 2:
                 setContentView(R.layout.configuration_activity);
-                saveButton = (MyButton) findViewById(R.id.button3);
+                saveButton = (SafeButton) findViewById(R.id.button3);
                 saveButton.setBackgroundColor(Color.GRAY);
                 activ = Tree.config;
                 break;
@@ -47,8 +47,8 @@ public class LayoutActivity extends Activity {
                 break;
         }
 
-        selectableButton = (MyButton) findViewById(R.id.button);
-        nextButton = (MyButton) findViewById(R.id.button2);
+        selectableButton = (SafeButton) findViewById(R.id.button);
+        nextButton = (SafeButton) findViewById(R.id.button2);
         topText = (TextView) findViewById(R.id.textView);
         selectableButton.setBackgroundColor(Color.GRAY);
         nextButton.setBackgroundColor(Color.GRAY);
@@ -60,68 +60,71 @@ public class LayoutActivity extends Activity {
         nextButton.setText("->");
         i = 0;
 
-        selectableButton.setOnTouchListener(new View.OnTouchListener() {
+        selectableButton.setOnSafeTapListener(new SafeTapListener() {
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (selectableButton.isSafeTouch(event)) {
+            public boolean onSafeTap(SafeButton safeButton) {
 
-                    if (Objects.equals(selectableButton.getText(), "^")) {
+                if (Objects.equals(selectableButton.getText(), "^")) {
 
-                        if (Objects.equals(topText.getText().toString(), "main") || Objects.equals(topText.getText().toString(), "config")) {
-                            Intent backToRoot = new Intent(LayoutActivity.this, RootActivity.class);
-                            startActivity(backToRoot);
-                        }
-                        else {
-                            topText.setText(topText.getText().toString().replace(" > " + actual.parent.data, ""));
-                        }
-                        actual = actual.parent;
-                        i = actual.parent.children.indexOf(actual);
-                        Log.d("1", (String) actual.data);
-                        selectableButton.setText((CharSequence) actual.data);
-
-                    } else if (actual.isInternalNode()) {
-                        if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
-                            topText.setText((CharSequence) actual.data);
-                        else
-                            topText.append(" > " + actual.data);
-                        actual = (TreeNode) actual.children.get(0);
-                        i = 0;
-                        Log.d("1", (String) actual.data);
-                        selectableButton.setText((CharSequence) actual.data);
+                    if (Objects.equals(topText.getText().toString(), "main") || Objects.equals(topText.getText().toString(), "config")) {
+                        Intent backToRoot = new Intent(LayoutActivity.this, RootActivity.class);
+                        startActivity(backToRoot);
                     } else {
-
+                        topText.setText(topText.getText().toString().replace(" > " + actual.parent.data, ""));
                     }
-                }
-                return true;
-            }
-        });
+                    actual = actual.parent;
+                    i = actual.parent.children.indexOf(actual);
+                    Log.d("1", (String) actual.data);
+                    selectableButton.setText((CharSequence) actual.data);
 
-        nextButton.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (nextButton.isSafeTouch(event)) {
-                    TreeNode next;
-                    if (Objects.equals(selectableButton.getText(), "^")) {
-                        i = 0;
-                        next = (TreeNode) actual.parent.children.get(i);
-                        actual = next;
-                        selectableButton.setText((CharSequence) actual.data);
-                    } else if (i < actual.parent.children.size() - 1) {
-                        Log.d("1", (String) actual.parent.data);
-                        i++;
-                        next = (TreeNode) actual.parent.children.get(i);
-                        actual = next;
-                        selectableButton.setText((CharSequence) actual.data);
-                    } else {
-                        selectableButton.setText("^");
-                    }
+                } else if (actual.isInternalNode()) {
+                    if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
+                        topText.setText((CharSequence) actual.data);
+                    else
+                        topText.append(" > " + actual.data);
+                    actual = (TreeNode) actual.children.get(0);
+                    i = 0;
+                    Log.d("1", (String) actual.data);
+                    selectableButton.setText((CharSequence) actual.data);
+                } else {
 
                 }
                 return true;
             }
+
         });
+
+        nextButton.setOnSafeTapListener(new SafeTapListener()
+
+                                        {
+
+                                            @Override
+                                            public boolean onSafeTap(SafeButton safeButton) {
+
+
+                                                TreeNode next;
+                                                if (Objects.equals(selectableButton.getText(), "^")) {
+                                                    i = 0;
+                                                    next = (TreeNode) actual.parent.children.get(i);
+                                                    actual = next;
+                                                    selectableButton.setText((CharSequence) actual.data);
+                                                } else if (i < actual.parent.children.size() - 1) {
+                                                    Log.d("1", (String) actual.parent.data);
+                                                    i++;
+                                                    next = (TreeNode) actual.parent.children.get(i);
+                                                    actual = next;
+                                                    selectableButton.setText((CharSequence) actual.data);
+                                                } else {
+                                                    selectableButton.setText("^");
+                                                }
+
+
+                                                return true;
+                                            }
+                                        }
+
+        );
     }
 
     @Override
