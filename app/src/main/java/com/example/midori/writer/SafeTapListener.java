@@ -5,5 +5,5 @@ package com.example.midori.writer;
  */
 public interface SafeTapListener {
 
-    public boolean onSafeTap(SafeButton safeButton);
+    boolean onSafeTap(SafeButton safeButton);
 }

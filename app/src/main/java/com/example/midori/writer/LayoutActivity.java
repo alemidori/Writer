@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.Objects;
@@ -19,7 +17,7 @@ import java.util.Objects;
 public class LayoutActivity extends Activity {
     TreeNode activ;
     TextView topText;
-    SafeButton selectableButton, nextButton, saveButton;
+    SafeButton selectableButton, nextButton;
     TreeNode first, actual;
     int i;
 
@@ -30,22 +28,6 @@ public class LayoutActivity extends Activity {
         final Intent rootActivity = getIntent();
         final int activity = rootActivity.getExtras().getInt("activity");
 
-        switch (activity) {
-            case 1:
-                setContentView(R.layout.activity_default);
-                activ = Tree.main;
-                break;
-            case 2:
-                setContentView(R.layout.configuration_activity);
-                saveButton = (SafeButton) findViewById(R.id.button3);
-                saveButton.setBackgroundColor(Color.GRAY);
-                activ = Tree.config;
-                break;
-            default:
-                setContentView(R.layout.activity_default);
-                System.out.println("Activity non specificata");
-                break;
-        }
 
         selectableButton = (SafeButton) findViewById(R.id.button);
         nextButton = (SafeButton) findViewById(R.id.button2);

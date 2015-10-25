@@ -18,21 +18,26 @@ import java.util.List;
 //TODO lo schermo non va mai in sleep, quindi non devo aver bisogno di sbloccarlo
 
 public class SafeButton extends Button {
-    private List<SafeTapListener> safeTapListeners= new ArrayList<SafeTapListener>();
+    private List<SafeTapListener> safeTapListeners = new ArrayList<SafeTapListener>();
 
-    public final static int NO_SAFE_TOUCH       = 0;
-    public final static int SHORT_SAFE_TOUCH    = 1;
-    public final static int MID_SAFE_TOUCH      = 2;
-    public final static int LONG_SAFE_TOUCH     = 3;
 
+    //costanti intere per rappresentare le durate del tocco
+    public final static int NO_SAFE_TOUCH = 0;
+    public final static int SHORT_SAFE_TOUCH = 1;
+    public final static int MID_SAFE_TOUCH = 2;
+    public final static int LONG_SAFE_TOUCH = 3;
+
+    //costanti long che corrispondo alla durata in millisecondi del tocco
     private final static long SHORT_SAFE_TOUCH_DURATION = 200;
-    private final static long MID_SAFE_TOUCH_DURATION   = 400;
-    private final static long LONG_SAFE_TOUCH_DURATION  = 600;
+    private final static long MID_SAFE_TOUCH_DURATION = 400;
+    private final static long LONG_SAFE_TOUCH_DURATION = 600;
 
+    //variabile long alla quale è associata di default la durata breve
     private static long safeTouchDuration = SHORT_SAFE_TOUCH_DURATION;
 
+    //metodo per settare la durata del tocco
     public static void setSafeTouchLength(int touchDuration) {
-        switch(touchDuration) {
+        switch (touchDuration) {
             case NO_SAFE_TOUCH:
                 safeTouchDuration = 0;
                 break;
@@ -45,17 +50,17 @@ public class SafeButton extends Button {
             case LONG_SAFE_TOUCH:
                 safeTouchDuration = LONG_SAFE_TOUCH_DURATION;
                 break;
-            default: new Exception("Unknown safe touch duration. Check this out").printStackTrace();
+            default:
+                new Exception("Unknown safe touch duration. Check this out").printStackTrace();
         }
     }
 
-    public SafeButton actualButton;
-    public static long start;
+    public SafeButton actualButton; //per gestire il pulsante premuto
+    public static long start; //tempo inizio
     private boolean isPressed;
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(); //ci serve per gestire la durata del tocco con il runnable
 
-
-
+    //inizializza, chiamando a sua volta triggerSafeTap, la lista di listeners
     private void initializeTouchListener() {
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -88,6 +93,7 @@ public class SafeButton extends Button {
     }
 
 
+    //fa in modo che per ogni listener della lista risulti avvenuto l'evento di tocco e quindi ci sia un break
     private void triggerSafeTap() {
         for (SafeTapListener stl : safeTapListeners) {
             if (stl.onSafeTap(this)) {
@@ -97,13 +103,14 @@ public class SafeButton extends Button {
     }
 
 
-
+    //metodo per calcolare la durata in base alla costante safeTouchDuration
+    //restituisce true se la durata è uguale o maggiore
     private boolean isSafeTap(MotionEvent event) {
         actualButton = this;
         Runnable runnable = new Runnable() {
             public void run() {
                 if (isPressed) {
-                    actualButton.setBackgroundColor(Color.argb(255,153,153,153));
+                    actualButton.setBackgroundColor(Color.argb(255, 153, 153, 153));
                 }
 
             }

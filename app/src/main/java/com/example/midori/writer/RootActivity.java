@@ -7,50 +7,104 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.TextView;
 
+import java.util.Objects;
 
-//TODO posso fare una singola activity per tutto
 
 public class RootActivity extends Activity {
 
-    public SafeButton mainButton, configButton;
+    private TextView topText;
+    private SafeButton selectableButton, nextButton;
+    private TreeNode first, actual;
+    private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_default);
-
+        setContentView(R.layout.two_buttons);
         Tree.populate();
+        selectableButton = (SafeButton) findViewById(R.id.button);
+        nextButton = (SafeButton) findViewById(R.id.button2);
+        topText = (TextView) findViewById(R.id.textView);
+        selectableButton.setBackgroundColor(Color.GRAY);
+        nextButton.setBackgroundColor(Color.GRAY);
 
-        mainButton = (SafeButton) findViewById(R.id.button);
-        configButton = (SafeButton) findViewById(R.id.button2);
-        mainButton.setText((CharSequence) Tree.main.data);
-        configButton.setText((CharSequence) Tree.config.data);
-        mainButton.setBackgroundColor(Color.GRAY);
-        configButton.setBackgroundColor(Color.GRAY);
+        first = (TreeNode) Tree.root.children.get(0);
+        actual = first;
+        selectableButton.setText((CharSequence) actual.data);
+        topText.setText((CharSequence) actual.parent.data);
+        nextButton.setText("->");
+        i = 0;
 
+        selectableButton.setOnSafeTapListener(new SafeTapListener() {
 
-        mainButton.setOnSafeTapListener(new SafeTapListener() {
             @Override
             public boolean onSafeTap(SafeButton safeButton) {
-                Intent main = new Intent(safeButton.getContext(), LayoutActivity.class);
-                main.putExtra("activity", 1);
-                startActivity(main);
+
+                if (Objects.equals(selectableButton.getText(), "^")) {
+
+                    if (Objects.equals(topText.getText().toString(), "main") || Objects.equals(topText.getText().toString(), "config")) {
+
+                    } else {
+                        topText.setText(topText.getText().toString().replace(" > " + actual.parent.data, ""));
+                    }
+                    actual = actual.parent;
+                    i = actual.parent.children.indexOf(actual);
+                    Log.d("1", (String) actual.data);
+                    selectableButton.setText((CharSequence) actual.data);
+
+                } else if (actual.isInternalNode()) {
+                    if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
+                        topText.setText((CharSequence) actual.data);
+                    else
+                        topText.append(" > " + actual.data);
+                    actual = (TreeNode) actual.children.get(0);
+                    i = 0;
+                    Log.d("1", (String) actual.data);
+                    selectableButton.setText((CharSequence) actual.data);
+                } else {
+
+                }
                 return true;
             }
+
         });
 
-        configButton.setOnSafeTapListener(new SafeTapListener() {
-            @Override
-            public boolean onSafeTap(SafeButton safeButton) {
-                Intent main = new Intent(safeButton.getContext(), LayoutActivity.class);
-                main.putExtra("activity", 2);
-                startActivity(main);
-                return true;
-            }
-        });
+        nextButton.setOnSafeTapListener(new SafeTapListener() {
+                                            @Override
+                                            public boolean onSafeTap(SafeButton safeButton) {
+
+
+                                                TreeNode next;
+                                                if (Objects.equals(selectableButton.getText(), "^")) {
+                                                    i = 0;
+                                                    next = (TreeNode) actual.parent.children.get(i);
+                                                    actual = next;
+                                                    selectableButton.setText((CharSequence) actual.data);
+                                                } else if (i < actual.parent.children.size() - 1) {
+                                                    Log.d("1", (String) actual.parent.data);
+                                                    i++;
+                                                    next = (TreeNode) actual.parent.children.get(i);
+                                                    actual = next;
+                                                    selectableButton.setText((CharSequence) actual.data);
+                                                } else if(Objects.equals(actual.parent.data, "root")){
+                                                    i = 0;
+                                                    next = (TreeNode) actual.parent.children.get(i);
+                                                    actual = next;
+                                                    selectableButton.setText((CharSequence) actual.data);
+                                                }
+                                                else{
+                                                    selectableButton.setText("^");
+                                                }
+
+
+                                                return true;
+                                            }
+                                        }
+
+        );
+
     }
 
 
