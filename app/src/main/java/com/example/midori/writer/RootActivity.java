@@ -15,23 +15,24 @@ import java.util.Objects;
 public class RootActivity extends Activity {
 
     private TextView topText;
-    private SafeButton selectableButton, nextButton;
-    private TreeNode first, actual;
+    private SafeButton selectableButton;
+    private TreeNode actual;
     private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.two_buttons);
+
         Tree.populate();
+
         selectableButton = (SafeButton) findViewById(R.id.button);
-        nextButton = (SafeButton) findViewById(R.id.button2);
+        SafeButton nextButton = (SafeButton) findViewById(R.id.button2);
         topText = (TextView) findViewById(R.id.textView);
         selectableButton.setBackgroundColor(Color.GRAY);
         nextButton.setBackgroundColor(Color.GRAY);
 
-        first = (TreeNode) Tree.root.children.get(0);
-        actual = first;
+        actual = (TreeNode) Tree.root.children.get(0);
         selectableButton.setText((CharSequence) actual.data);
         topText.setText((CharSequence) actual.parent.data);
         nextButton.setText("->");
@@ -63,8 +64,6 @@ public class RootActivity extends Activity {
                     i = 0;
                     Log.d("1", (String) actual.data);
                     selectableButton.setText((CharSequence) actual.data);
-                } else {
-
                 }
                 return true;
             }
@@ -88,13 +87,12 @@ public class RootActivity extends Activity {
                                                     next = (TreeNode) actual.parent.children.get(i);
                                                     actual = next;
                                                     selectableButton.setText((CharSequence) actual.data);
-                                                } else if(Objects.equals(actual.parent.data, "root")){
+                                                } else if (Objects.equals(actual.parent.data, "root")) {
                                                     i = 0;
                                                     next = (TreeNode) actual.parent.children.get(i);
                                                     actual = next;
                                                     selectableButton.setText((CharSequence) actual.data);
-                                                }
-                                                else{
+                                                } else {
                                                     selectableButton.setText("^");
                                                 }
 

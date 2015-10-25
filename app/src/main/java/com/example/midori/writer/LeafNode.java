@@ -3,14 +3,15 @@ package com.example.midori.writer;
 /**
  * Created by Alessandra on 06/10/15.
  */
-public class LeafNode {
+public class LeafNode extends Node {
     private int action;
     private Object attribute;
 
     public static int ACTION_INSERT_TEXT        = 0;
     public static int ACTION_SET_TOUCH_DURATION = 1;
 
-    public LeafNode(int action, Object attribute) {
+    public LeafNode(TreeNode treeNode, int action, Object attribute) {
+        super(treeNode);
         this.action = action;
         this.attribute = attribute;
     }

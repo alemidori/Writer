@@ -20,7 +20,6 @@ import java.util.List;
 public class SafeButton extends Button {
     private List<SafeTapListener> safeTapListeners = new ArrayList<SafeTapListener>();
 
-
     //costanti intere per rappresentare le durate del tocco
     public final static int NO_SAFE_TOUCH = 0;
     public final static int SHORT_SAFE_TOUCH = 1;
@@ -90,6 +89,14 @@ public class SafeButton extends Button {
 
     public void setOnSafeTapListener(SafeTapListener stl) {
         safeTapListeners.add(stl);
+    }
+
+    public void setNode(Node n) {
+        this.setText((CharSequence) n.getTreeNode().data);
+    }
+
+    public Node getNode() {
+        return Tree.getNodeFromText((String) this.getText());
     }
 
 
