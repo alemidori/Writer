@@ -96,7 +96,7 @@ public class SafeButton extends Button {
     }
 
     public Node getNode() {
-        return Tree.getNodeFromText((String) this.getText());
+        return Tree.getInstance().getNodeFromText((String) this.getText());
     }
 
 

@@ -13,97 +13,36 @@ import java.util.Objects;
 
 
 public class RootActivity extends Activity {
-
-    private TextView topText;
-    private SafeButton selectableButton;
-    private TreeNode actual;
+    private static SafeButton selectableButton, nextButton;
+    private static TextView topText;
     private int i;
+
+    public static SafeButton getSelectableButton() {
+        return selectableButton;
+    }
+
+    public static TextView getTopText() {
+        return topText;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.two_buttons);
-
-        Tree.populate();
+        setContentView(R.layout.two_buttons); //default
 
         selectableButton = (SafeButton) findViewById(R.id.button);
-        SafeButton nextButton = (SafeButton) findViewById(R.id.button2);
+        nextButton = (SafeButton) findViewById(R.id.button2);
         topText = (TextView) findViewById(R.id.textView);
         selectableButton.setBackgroundColor(Color.GRAY);
         nextButton.setBackgroundColor(Color.GRAY);
-
-        actual = (TreeNode) Tree.root.children.get(0);
-        selectableButton.setText((CharSequence) actual.data);
-        topText.setText((CharSequence) actual.parent.data);
         nextButton.setText("->");
-        i = 0;
 
-        selectableButton.setOnSafeTapListener(new SafeTapListener() {
-
-            @Override
-            public boolean onSafeTap(SafeButton safeButton) {
-
-                if (Objects.equals(selectableButton.getText(), "^")) {
-
-                    if (Objects.equals(topText.getText().toString(), "main") || Objects.equals(topText.getText().toString(), "config")) {
-
-                    } else {
-                        topText.setText(topText.getText().toString().replace(" > " + actual.parent.data, ""));
-                    }
-                    actual = actual.parent;
-                    i = actual.parent.children.indexOf(actual);
-                    Log.d("1", (String) actual.data);
-                    selectableButton.setText((CharSequence) actual.data);
-
-                } else if (actual.isInternalNode()) {
-                    if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
-                        topText.setText((CharSequence) actual.data);
-                    else
-                        topText.append(" > " + actual.data);
-                    actual = (TreeNode) actual.children.get(0);
-                    i = 0;
-                    Log.d("1", (String) actual.data);
-                    selectableButton.setText((CharSequence) actual.data);
-                }
-                return true;
-            }
-
-        });
-
-        nextButton.setOnSafeTapListener(new SafeTapListener() {
-                                            @Override
-                                            public boolean onSafeTap(SafeButton safeButton) {
-
-
-                                                TreeNode next;
-                                                if (Objects.equals(selectableButton.getText(), "^")) {
-                                                    i = 0;
-                                                    next = (TreeNode) actual.parent.children.get(i);
-                                                    actual = next;
-                                                    selectableButton.setText((CharSequence) actual.data);
-                                                } else if (i < actual.parent.children.size() - 1) {
-                                                    Log.d("1", (String) actual.parent.data);
-                                                    i++;
-                                                    next = (TreeNode) actual.parent.children.get(i);
-                                                    actual = next;
-                                                    selectableButton.setText((CharSequence) actual.data);
-                                                } else if (Objects.equals(actual.parent.data, "root")) {
-                                                    i = 0;
-                                                    next = (TreeNode) actual.parent.children.get(i);
-                                                    actual = next;
-                                                    selectableButton.setText((CharSequence) actual.data);
-                                                } else {
-                                                    selectableButton.setText("^");
-                                                }
-
-
-                                                return true;
-                                            }
-                                        }
-
-        );
+        MainController mc = new MainController();
+        mc.start();
 
     }
+
 
 
     @Override

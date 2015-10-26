@@ -8,12 +8,13 @@ import java.util.Objects;
  * Created by Alessandra on 10/10/15.
  */
 public class Tree {
-    public static TreeNode root, main, config, lettere, frasi, comandi, tocco, audio, layout;
-    public static Node mainNode, configNode, lettereNode, frasiNode, comandiNode;
-    public static List<Node> nodeList = new ArrayList<>();
+    
+    private static Tree instance;
+    private TreeNode root, main, config, lettere, frasi, comandi, tocco, audio, layout;
+    private Node mainNode, configNode, lettereNode, frasiNode, comandiNode;
+    private List<Node> nodeList = new ArrayList<>();
 
-    public static void populate() {
-
+    private Tree() {
         root = new TreeNode("root");
         main = root.addChild("main");
         config = root.addChild("config");
@@ -55,13 +56,24 @@ public class Tree {
         nodeList.add(new InternalNode(frasi));
         nodeList.add(new InternalNode(comandi));
 
-        List<TreeNode> l = lettere.children;
-        for (TreeNode t : l) {
+        List<TreeNode> lettereChildren = lettere.children;
+        for (TreeNode t : lettereChildren) {
             nodeList.add(new LeafNode(t, LeafNode.ACTION_INSERT_TEXT, t.data));
+        }
+
+        List<TreeNode> toccoChildren = tocco.children;
+        for (TreeNode t : toccoChildren) {
+            nodeList.add(new LeafNode(t, LeafNode.ACTION_SET_TOUCH_DURATION, t.data));
         }
     }
 
-    public static Node getNodeFromText(String s) {
+    public static Tree getInstance(){
+        if(instance==null)
+            instance = new Tree();
+        return instance;
+    }
+
+    public Node getNodeFromText(String s) {
         Node toReturn = null;
         for (Node n : nodeList) {
             if (Objects.equals(n.getTreeNode().data, s)) {
