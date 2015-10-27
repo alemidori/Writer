@@ -91,9 +91,6 @@ public class SafeButton extends Button {
         safeTapListeners.add(stl);
     }
 
-    public void setNode(Node n) {
-        this.setText((CharSequence) n.getTreeNode().data);
-    }
 
     public Node getNode() {
         return Tree.getInstance().getNodeFromText((String) this.getText());

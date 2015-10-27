@@ -12,43 +12,47 @@ public class MainController implements SafeTapListener {
     //controlla tutto il comportamento del sistema; c'è un unico safebutton che gestisce tutti i tocchi;
     //è controllato tutto a livello inferiore
 
-    private SafeButton button;
+    private SafeButton button, next;
     private Node node;
     private TreeNode actual;
     private int i;
 
-
-    public void start() {
+    public MainController() {
         Tree.getInstance();
-        RootActivity.getSelectableButton().setText("main");
         button = RootActivity.getSelectableButton();
-        RootActivity.getTopText().setText((CharSequence) button.getNode().getTreeNode().parent);
+        button.setOnSafeTapListener(this);
+        next = RootActivity.getNextButton();
+        next.setOnSafeTapListener(this);
+        node = button.getNode();
+        actual = node.getTreeNode();
+        RootActivity.getTopText().setText((CharSequence) button.getNode().getTreeNode().parent.data);
         i = 0;
     }
 
+
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
-        button.setOnSafeTapListener(this);
 
         // NEXT BUTTON
-        if (Objects.equals(button.getText(), "->")) {
-            TreeNode next;
+        if (Objects.equals(safeButton, next)) {
+            TreeNode nextNode;
             if (Objects.equals(RootActivity.getSelectableButton().getText(), "^")) {
                 i = 0;
-                next = (TreeNode) actual.parent.children.get(i);
-                actual = next;
+                nextNode = (TreeNode) actual.parent.children.get(i);
+                actual = nextNode;
                 RootActivity.getSelectableButton().setText((CharSequence) actual.data);
             } else if (i < actual.parent.children.size() - 1) {
                 Log.d("1", (String) actual.parent.data);
                 i++;
-                next = (TreeNode) actual.parent.children.get(i);
-                actual = next;
+                nextNode = (TreeNode) actual.parent.children.get(i);
+                actual = nextNode;
                 RootActivity.getSelectableButton().setText((CharSequence) actual.data);
             } else if (Objects.equals(actual.parent.data, "root")) {
                 i = 0;
-                next = (TreeNode) actual.parent.children.get(i);
-                actual = next;
+                nextNode = (TreeNode) actual.parent.children.get(i);
+                actual = nextNode;
                 RootActivity.getSelectableButton().setText((CharSequence) actual.data);
+                Log.d("1", (String) actual.data);
             } else {
                 RootActivity.getSelectableButton().setText("^");
             }
@@ -57,32 +61,30 @@ public class MainController implements SafeTapListener {
 
         // SELECTABLE BUTTON
         else {
-            node = button.getNode();
+            //se è un nodo di goPrevLevel
+            if (Objects.equals(button.getText(), "^")) {
+                if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config")) {
+                    RootActivity.getTopText().setText("");
+                    actual = node.getTreeNode().parent;
+                } else {
+                    Log.d("1", (String) actual.data);
+                    RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
+                    i = actual.parent.children.indexOf(actual);
+                    actual = actual.parent;
+                    RootActivity.getSelectableButton().setText((CharSequence) actual.data);
+                }
+            }
             //se è un nodo interno all'albero
-            if (node.isInternal()) {
-                actual = node.getTreeNode();
+            else if (node.isInternal()) {
                 if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
                     RootActivity.getTopText().setText((CharSequence) actual.data);
                 else
                     RootActivity.getTopText().append(" > " + actual.data);
-                actual = (TreeNode) actual.children.get(0);
                 i = 0;
+                actual = (TreeNode) actual.children.get(i);
                 Log.d("1", (String) actual.data);
                 RootActivity.getSelectableButton().setText((CharSequence) actual.data);
             }
-
-            //se è un nodo goPrevLevel
-            else if (Objects.equals(button.getText(), "^")) {
-                if (!Objects.equals(actual.data, "main") || !Objects.equals(actual.data, "config")) {
-                    RootActivity.getTopText().setText("");
-                } else
-                    RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
-                actual = node.getTreeNode().parent;
-                i = actual.parent.children.indexOf(actual);
-                Log.d("1", (String) actual.data);
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-            }
-
             //se è una foglia
             else doAction((LeafNode) button.getNode());
 

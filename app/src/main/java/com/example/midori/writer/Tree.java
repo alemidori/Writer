@@ -8,11 +8,17 @@ import java.util.Objects;
  * Created by Alessandra on 10/10/15.
  */
 public class Tree {
-    
+
     private static Tree instance;
     private TreeNode root, main, config, lettere, frasi, comandi, tocco, audio, layout;
     private Node mainNode, configNode, lettereNode, frasiNode, comandiNode;
     private List<Node> nodeList = new ArrayList<>();
+
+    public static Tree getInstance(){
+        if(instance==null)
+            instance = new Tree();
+        return instance;
+    }
 
     private Tree() {
         root = new TreeNode("root");
@@ -67,11 +73,6 @@ public class Tree {
         }
     }
 
-    public static Tree getInstance(){
-        if(instance==null)
-            instance = new Tree();
-        return instance;
-    }
 
     public Node getNodeFromText(String s) {
         Node toReturn = null;

@@ -1,21 +1,22 @@
 package com.example.midori.writer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.util.Objects;
-
 
 public class RootActivity extends Activity {
-    private static SafeButton selectableButton, nextButton;
+    private static SafeButton selectableButton;
+
+    public static SafeButton getNextButton() {
+        return nextButton;
+    }
+
+    private static SafeButton nextButton;
     private static TextView topText;
-    private int i;
 
     public static SafeButton getSelectableButton() {
         return selectableButton;
@@ -38,11 +39,11 @@ public class RootActivity extends Activity {
         nextButton.setBackgroundColor(Color.GRAY);
         nextButton.setText("->");
 
-        MainController mc = new MainController();
-        mc.start();
+        selectableButton.setText("main");
+
+        new MainController();
 
     }
-
 
 
     @Override
