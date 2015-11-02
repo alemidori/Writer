@@ -1,22 +1,44 @@
 package com.example.midori.writer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RootActivity extends Activity {
-    private static SafeButton selectableButton;
+
+    private static RootActivity rootActivity;
+    private static Context context;
+    private static SafeButton selectableButton, nextButton;
+    private static List<CharSequence> selectableButtons;
+    private static TextView topText;
+    private static int layoutValue;
+
+    public static void setLayoutValue(int layoutValue) {
+        RootActivity.layoutValue = layoutValue;
+    }
+
+    public static Context getContext() {
+        return context;
+    }
+
+    public static EditText getInputSection() {
+        return inputSection;
+    }
+
+    private static EditText inputSection;
 
     public static SafeButton getNextButton() {
         return nextButton;
     }
-
-    private static SafeButton nextButton;
-    private static TextView topText;
 
     public static SafeButton getSelectableButton() {
         return selectableButton;
@@ -26,22 +48,40 @@ public class RootActivity extends Activity {
         return topText;
     }
 
+    public static RootActivity getInstanceRootActivity() {
+        return rootActivity;
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.two_buttons); //default
 
-        selectableButton = (SafeButton) findViewById(R.id.button);
-        nextButton = (SafeButton) findViewById(R.id.button2);
+        rootActivity=this;
+        context = this.getApplicationContext();
+
+        switch (layoutValue){
+            case 1:setContentView(R.layout.two_buttons);
+                selectableButton = (SafeButton) findViewById(R.id.button);
+                nextButton = (SafeButton) findViewById(R.id.button2);
+                break;
+            case 2:setContentView(R.layout.four_buttons);
+                selectableButton = (SafeButton) findViewById(R.id.button);
+                nextButton = (SafeButton) findViewById(R.id.button2);
+                break;
+            case 3:setContentView(R.layout.eight_buttons);
+                break;
+            default:setContentView(R.layout.two_buttons);
+                selectableButton = (SafeButton) findViewById(R.id.button);
+                nextButton = (SafeButton) findViewById(R.id.button2);
+                break;
+        }
+
+
         topText = (TextView) findViewById(R.id.textView);
-        selectableButton.setBackgroundColor(Color.GRAY);
-        nextButton.setBackgroundColor(Color.GRAY);
-        nextButton.setText("->");
-
-        selectableButton.setText("main");
-
-        new MainController();
+        inputSection = (EditText) findViewById(R.id.editText);
+        MainController.getInstance();
 
     }
 

@@ -24,7 +24,7 @@
         android:layout_height="150dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/concession_btn"
+            android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -32,6 +32,7 @@
             />
 
         <com.example.midori.writer.SafeButton
+            android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:text="test2"
@@ -44,7 +45,7 @@
         android:layout_height="150dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/test_2"
+            android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test3"
@@ -52,6 +53,7 @@
             />
 
         <com.example.midori.writer.SafeButton
+            android:id="@+id/button2"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test4"

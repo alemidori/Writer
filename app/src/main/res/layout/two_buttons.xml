@@ -28,18 +28,18 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:text="test1"
+            android:text="main"
             android:layout_margin="1dp"
-            />
+            android:background="#cccccc" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:text="test2"
+            android:text=">"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            />
+            android:background="#cccccc" />
     </LinearLayout>
 
 

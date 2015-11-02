@@ -7,7 +7,7 @@ public class InternalNode extends Node {
 
     public InternalNode(TreeNode treeNode) {
         super(treeNode);
-        super.setInternal();
+        super.setInternal(true);
     }
 
 }

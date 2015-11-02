@@ -9,15 +9,14 @@ public class Node {
 
     public Node(TreeNode t){
         treeNode = t;
-        isInternalNode = false;
     }
 
     public boolean isInternal(){
         return isInternalNode;
     }
 
-    protected void setInternal(){
-        isInternalNode = true;
+    protected void setInternal(boolean value){
+        isInternalNode = value;
     }
 
     public TreeNode getTreeNode() {

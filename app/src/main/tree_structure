@@ -1,0 +1,39 @@
+{
+  "root": {
+    "main": {
+      "lettere": {
+        "a": "A",
+        "b": "B",
+        "c": "C"
+      },
+      "frasi": {
+        "f1": "Hello World!",
+        "f2": "abababa"
+      },
+      "comandi": {
+        "c1": "salva",
+        "c2": "riproduci",
+        "c3": "elimina"
+      }
+
+    },
+    "config": {
+      "tocco": {
+        "t1": "disabilita",
+        "t2": "breve",
+        "t3": "medio",
+        "t4": "lungo"
+      },
+      "audio": {
+        "a1": "muto",
+        "a2": "basso",
+        "a3": "alto"
+      },
+      "layout": {
+        "l1": "2x1",
+        "l2": "2x2",
+        "l3": "4x2"
+      }
+    }
+  }
+}

@@ -127,7 +127,7 @@ public class SafeButton extends Button {
                 System.out.println(event.getAction());
                 break;
             case MotionEvent.ACTION_UP:
-                actualButton.setBackgroundColor(Color.GRAY);
+                actualButton.setBackgroundColor(Color.LTGRAY);
                 if (isPressed) {
                     isPressed = false;
                     handler.removeCallbacks(runnable);

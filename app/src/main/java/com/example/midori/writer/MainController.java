@@ -1,6 +1,9 @@
 package com.example.midori.writer;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -8,16 +11,19 @@ import java.util.Objects;
  * Created by Alessandra on 22/10/15.
  */
 public class MainController implements SafeTapListener {
-
-    //controlla tutto il comportamento del sistema; c'è un unico safebutton che gestisce tutti i tocchi;
-    //è controllato tutto a livello inferiore
-
+    private static MainController instance;
     private SafeButton button, next;
     private Node node;
     private TreeNode actual;
     private int i;
 
-    public MainController() {
+    public static MainController getInstance() {
+        if (instance == null)
+            instance = new MainController();
+        return instance;
+    }
+
+    private MainController() {
         Tree.getInstance();
         button = RootActivity.getSelectableButton();
         button.setOnSafeTapListener(this);
@@ -66,11 +72,14 @@ public class MainController implements SafeTapListener {
                 if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config")) {
                     RootActivity.getTopText().setText("");
                     actual = node.getTreeNode().parent;
+                    node = Tree.getInstance().getNodeFromText((String) actual.data);
+                    Log.d("1", (String) node.getTreeNode().data);
                 } else {
-                    Log.d("1", (String) actual.data);
+                    Log.d("1", (String) node.getTreeNode().data);
                     RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
-                    i = actual.parent.children.indexOf(actual);
                     actual = actual.parent;
+                    node = Tree.getInstance().getNodeFromText((String) actual.data);
+                    i = actual.parent.children.indexOf(actual);
                     RootActivity.getSelectableButton().setText((CharSequence) actual.data);
                 }
             }
@@ -81,12 +90,16 @@ public class MainController implements SafeTapListener {
                 else
                     RootActivity.getTopText().append(" > " + actual.data);
                 i = 0;
+                Log.d("1", (String) node.getTreeNode().data);
                 actual = (TreeNode) actual.children.get(i);
-                Log.d("1", (String) actual.data);
+                node = Tree.getInstance().getNodeFromText((String) actual.data);
                 RootActivity.getSelectableButton().setText((CharSequence) actual.data);
+
             }
             //se è una foglia
-            else doAction((LeafNode) button.getNode());
+            else {
+                doAction((LeafNode) button.getNode());
+            }
 
         }
         return false;
@@ -96,16 +109,69 @@ public class MainController implements SafeTapListener {
     private void doAction(LeafNode lf) {
         switch (lf.getAction()) {
             case LeafNode.ACTION_INSERT_TEXT:
-                if (!(lf.getAttribute() instanceof String))
-                    new Exception("Comando sconosciuto.").printStackTrace();
-                String textToAdd = (String) lf.getAttribute();
-                //inserire testo nel textInput
+                if (!(lf.getAttribute() instanceof CharSequence))
+                    new Exception("Formato errato").printStackTrace();
+                else {
+                    if (lf.getAttribute().toString().length() == 1)
+                        RootActivity.getInputSection().append((CharSequence) lf.getAttribute());
+                    else
+                        RootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
+                }
                 break;
             case LeafNode.ACTION_SET_TOUCH_DURATION:
-                if (!(lf.getAttribute() instanceof Integer))
-                    new Exception("Comando sconosciuto.").printStackTrace();
-                Integer index = (Integer) lf.getAttribute();
-                SafeButton.setSafeTouchLength(index);
+                Toast toast;
+                if (!(lf.getAttribute() instanceof CharSequence))
+                    new Exception("Formato errato").printStackTrace();
+                else {
+                    int index = lf.getDurationTouchID(lf.getAttribute().toString());
+                    SafeButton.setSafeTouchLength(index);
+                    Log.d("2", (String) lf.getAttribute());
+                    String toShow;
+                    switch ((String) lf.getAttribute()){
+                        case "disabilita":toShow= "Tocco 'safe' disabilitato.";
+                            break;
+                        case "breve": toShow="Tocco breve impostato.";
+                            break;
+                        case "medio": toShow="Tocoo medio impostato.";
+                            break;
+                        case "lungo": toShow="Tocco lungo impostato.";
+                            break;
+                        default:toShow="Errore nella scelta della durata del tocco.";
+                            break;
+                    }
+                    toast = Toast.makeText(RootActivity.getContext(), toShow, Toast.LENGTH_LONG );
+                    toast.show();
+                }
+                break;
+            case LeafNode.ACTION_AUDIO_VOLUME:
+                if (!(lf.getAttribute() instanceof CharSequence))
+                    new Exception("Formato errato").printStackTrace();
+                else{
+                    toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG );
+                    toast.show();
+                }
+                break;
+            case LeafNode.LAYOUT:
+                if (!(lf.getAttribute() instanceof CharSequence))
+                    new Exception("Formato errato").printStackTrace();
+                else {
+                    switch ((String)lf.getAttribute()){
+                        case "2x1-portrait": RootActivity.setLayoutValue(1);
+                            break;
+                        case "2x2-portrait": RootActivity.setLayoutValue(2);
+                            break;
+                        case "4x2-portrait": RootActivity.setLayoutValue(3);
+                            break;
+                        default: RootActivity.setLayoutValue(1);
+                            break;
+                    }
+
+                    RootActivity.getInstanceRootActivity().recreate();
+
+                }
+                break;
+            default:
+                RootActivity.getSelectableButton().setText("foglia");
                 break;
         }
     }
