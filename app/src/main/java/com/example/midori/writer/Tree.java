@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class Tree {
 
             JsonReader reader = new JsonReader(new FileReader("tree_structure"));
             reader.beginObject();
-            while (reader.hasNext()){
+            while (reader.hasNext()) {
                 String obj = reader.nextName();
                 Log.d("2", obj);
             }
@@ -39,7 +40,6 @@ public class Tree {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         root = new TreeNode("root");
@@ -55,6 +55,10 @@ public class Tree {
 
         frasi.addChild("Hello world!");
         frasi.addChild("ababababa");
+
+        comandi.addChild("salva");
+        comandi.addChild("ripoduci");
+        comandi.addChild("elimina");
 
         tocco = config.addChild("tocco");
         audio = config.addChild("audio");
@@ -110,6 +114,11 @@ public class Tree {
         for (TreeNode t : layoutChildren) {
             nodeList.add(new LeafNode(t, LeafNode.LAYOUT, t.data));
         }
+
+        List<TreeNode> comandiChildren = comandi.children;
+        for (TreeNode t : comandiChildren) {
+            nodeList.add(new LeafNode(t, LeafNode.COMMANDS, t.data));
+        }
     }
 
 
@@ -121,5 +130,37 @@ public class Tree {
             }
         }
         return toReturn;
+    }
+
+    public boolean savePeriod(String period) {
+        boolean toReturn;
+        if(Objects.equals(period, ""))
+            toReturn = false;
+        else {
+            TreeNode newPeriod = frasi.addChild(period);
+            nodeList.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
+            toReturn = true;
+        }
+        return toReturn;
+    }
+
+    public Node deletePeriod(String period) {
+        Node nextPeriod = null;
+        Node n;
+        for (Iterator<Node> iterator =nodeList.iterator();iterator.hasNext();) {
+            n=iterator.next();
+            if (n.getTreeNode().data.equals(period)) {
+                if (nodeList.indexOf(n) < nodeList.size() - 1)
+                    nextPeriod = nodeList.get(nodeList.indexOf(n) + 1);
+                else nextPeriod = nodeList.get(0);
+                iterator.remove();
+            }
+        }
+        if(nextPeriod!=null) {
+            RootActivity.getInputSection().setText("");
+            return nextPeriod;
+        }
+        else return null;
+
     }
 }

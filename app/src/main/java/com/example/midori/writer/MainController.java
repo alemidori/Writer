@@ -127,27 +127,32 @@ public class MainController implements SafeTapListener {
                     SafeButton.setSafeTouchLength(index);
                     Log.d("2", (String) lf.getAttribute());
                     String toShow;
-                    switch ((String) lf.getAttribute()){
-                        case "disabilita":toShow= "Tocco 'safe' disabilitato.";
+                    switch ((String) lf.getAttribute()) {
+                        case "disabilita":
+                            toShow = "Tocco 'safe' disabilitato.";
                             break;
-                        case "breve": toShow="Tocco breve impostato.";
+                        case "breve":
+                            toShow = "Tocco breve impostato.";
                             break;
-                        case "medio": toShow="Tocoo medio impostato.";
+                        case "medio":
+                            toShow = "Tocoo medio impostato.";
                             break;
-                        case "lungo": toShow="Tocco lungo impostato.";
+                        case "lungo":
+                            toShow = "Tocco lungo impostato.";
                             break;
-                        default:toShow="Errore nella scelta della durata del tocco.";
+                        default:
+                            toShow = "Errore nella scelta della durata del tocco.";
                             break;
                     }
-                    toast = Toast.makeText(RootActivity.getContext(), toShow, Toast.LENGTH_LONG );
+                    toast = Toast.makeText(RootActivity.getContext(), toShow, Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
             case LeafNode.ACTION_AUDIO_VOLUME:
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
-                else{
-                    toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG );
+                else {
+                    toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
@@ -155,18 +160,60 @@ public class MainController implements SafeTapListener {
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
                 else {
-                    switch ((String)lf.getAttribute()){
-                        case "2x1-portrait": RootActivity.setLayoutValue(1);
+                    switch ((String) lf.getAttribute()) {
+                        case "2x1-portrait":
+                            RootActivity.setLayoutValue(1);
                             break;
-                        case "2x2-portrait": RootActivity.setLayoutValue(2);
+                        case "2x2-portrait":
+                            RootActivity.setLayoutValue(2);
                             break;
-                        case "4x2-portrait": RootActivity.setLayoutValue(3);
+                        case "4x2-portrait":
+                            RootActivity.setLayoutValue(3);
                             break;
-                        default: RootActivity.setLayoutValue(1);
+                        default:
+                            RootActivity.setLayoutValue(1);
                             break;
                     }
 
                     RootActivity.getInstanceRootActivity().recreate();
+
+                }
+                break;
+            case LeafNode.COMMANDS:
+                if (!(lf.getAttribute() instanceof CharSequence))
+                    new Exception("Formato errato").printStackTrace();
+                else {
+                    switch ((String) lf.getAttribute()) {
+                        case "salva":
+                            if (Tree.getInstance().savePeriod(RootActivity.getInputSection().getText().toString())) {
+                                toast = Toast.makeText(RootActivity.getContext(), "Frase salvata.", Toast.LENGTH_LONG);
+                                toast.show();
+                            } else {
+                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+
+                            break;
+                        case "riproduci":
+                            toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
+                            toast.show();
+                            break;
+                        case "elimina":
+                            node = Tree.getInstance().deletePeriod(RootActivity.getInputSection().getText().toString());
+                            if (node != null) {
+                                RootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
+                                toast = Toast.makeText(RootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
+                                toast.show();
+                            } else {
+                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                            break;
+                        default:
+                            toast = Toast.makeText(RootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);
+                            toast.show();
+                            break;
+                    }
 
                 }
                 break;

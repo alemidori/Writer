@@ -53,26 +53,30 @@ public class RootActivity extends Activity {
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        rootActivity=this;
+        rootActivity = this;
         context = this.getApplicationContext();
 
-        switch (layoutValue){
-            case 1:setContentView(R.layout.two_buttons);
+        selectableButton = (SafeButton) findViewById(R.id.button);
+        nextButton = (SafeButton) findViewById(R.id.button2);
+
+        switch (layoutValue) {
+            case 1:
+                setContentView(R.layout.two_buttons);
                 selectableButton = (SafeButton) findViewById(R.id.button);
                 nextButton = (SafeButton) findViewById(R.id.button2);
                 break;
-            case 2:setContentView(R.layout.four_buttons);
-                selectableButton = (SafeButton) findViewById(R.id.button);
-                nextButton = (SafeButton) findViewById(R.id.button2);
+            case 2:
+                setContentView(R.layout.four_buttons);
                 break;
-            case 3:setContentView(R.layout.eight_buttons);
+            case 3:
+                setContentView(R.layout.eight_buttons);
                 break;
-            default:setContentView(R.layout.two_buttons);
+            default:
+                setContentView(R.layout.two_buttons);
                 selectableButton = (SafeButton) findViewById(R.id.button);
                 nextButton = (SafeButton) findViewById(R.id.button2);
                 break;
