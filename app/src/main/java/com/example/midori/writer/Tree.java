@@ -1,10 +1,13 @@
 package com.example.midori.writer;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.Objects;
  */
 public class Tree {
     private static Tree instance;
+    private String obj;
+    private JsonReader reader;
     private TreeNode root, main, config, lettere, frasi, comandi, tocco, audio, layout;
     private Node mainNode, configNode, lettereNode, frasiNode, comandiNode;
     private List<Node> nodeList = new ArrayList<>();
@@ -27,20 +32,8 @@ public class Tree {
 
 
     private Tree() {
-
-        try {
-
-            JsonReader reader = new JsonReader(new FileReader("tree_structure"));
-            reader.beginObject();
-            while (reader.hasNext()) {
-                String obj = reader.nextName();
-                Log.d("2", obj);
-            }
-            reader.endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        reader = new JsonReader(new InputStreamReader(RootActivity.getFileInput()));
+        parseJSON();
 
         root = new TreeNode("root");
         main = root.addChild("main");
@@ -122,6 +115,43 @@ public class Tree {
     }
 
 
+    private void parseJSON() {
+        TreeNode lastParentNode = null;
+        boolean flag = false;
+        try {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                System.out.println(reader.peek());
+                if (obj == null) {
+                    System.out.println("PRIMA CHIAMATA");
+                    obj = reader.nextName();
+                    TreeNode firstNode = new TreeNode<>(obj);
+                    lastParentNode = firstNode;
+
+                } else {
+                    flag = true;
+                    obj = reader.nextName();
+                }
+
+                if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                    if (flag) {
+                        lastParentNode = lastParentNode.addChild(obj);
+                        nodeList.add(new InternalNode(lastParentNode));
+                    }
+                    parseJSON();
+                } else {
+                    lastParentNode.addChild(obj);
+                    //switchare per tipo action del leafNode
+                    reader.skipValue();
+
+                }
+            }
+            reader.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Node getNodeFromText(String s) {
         Node toReturn = null;
         for (Node n : nodeList) {
@@ -134,7 +164,7 @@ public class Tree {
 
     public boolean savePeriod(String period) {
         boolean toReturn;
-        if(Objects.equals(period, ""))
+        if (Objects.equals(period, ""))
             toReturn = false;
         else {
             TreeNode newPeriod = frasi.addChild(period);
@@ -147,8 +177,8 @@ public class Tree {
     public Node deletePeriod(String period) {
         Node nextPeriod = null;
         Node n;
-        for (Iterator<Node> iterator =nodeList.iterator();iterator.hasNext();) {
-            n=iterator.next();
+        for (Iterator<Node> iterator = nodeList.iterator(); iterator.hasNext(); ) {
+            n = iterator.next();
             if (n.getTreeNode().data.equals(period)) {
                 if (nodeList.indexOf(n) < nodeList.size() - 1)
                     nextPeriod = nodeList.get(nodeList.indexOf(n) + 1);
@@ -156,11 +186,10 @@ public class Tree {
                 iterator.remove();
             }
         }
-        if(nextPeriod!=null) {
+        if (nextPeriod != null) {
             RootActivity.getInputSection().setText("");
             return nextPeriod;
-        }
-        else return null;
+        } else return null;
 
     }
 }

@@ -16,12 +16,16 @@ import java.util.List;
 
 
 public class RootActivity extends Activity {
-
+    private static InputStream fileInput;
     private static RootActivity rootActivity;
     private static Context context;
     private static SafeButton selectableButton, nextButton;
     private static TextView topText;
     private static int layoutValue;
+
+    public static InputStream getFileInput() {
+        return fileInput;
+    }
 
     public static void setLayoutValue(int layoutValue) {
         RootActivity.layoutValue = layoutValue;
@@ -58,15 +62,8 @@ public class RootActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fileInput = this.getResources().openRawResource(R.raw.tree_structure);
 
-        InputStream is = this.getResources().openRawResource(R.raw.tree_structure);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        try {
-            System.out.println(br.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         rootActivity = this;
         context = this.getApplicationContext();
 
