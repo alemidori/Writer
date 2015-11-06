@@ -132,6 +132,11 @@ public class Tree {
         return toReturn;
     }
 
+    public void deleteChar(CharSequence cs){
+            CharSequence withoutLast = cs.subSequence(0, RootActivity.getInputSection().getText().length() - 1);
+            RootActivity.getInputSection().setText(withoutLast);
+    }
+
     public Node deletePeriod(String period) {
         Node nextPeriod = null;
         Node n;

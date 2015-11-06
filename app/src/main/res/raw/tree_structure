@@ -13,7 +13,8 @@
       "comandi": {
         "salva": "salva",
         "riproduci": "riproduci",
-        "elimina": "elimina"
+        "cancella": "cancella",
+        "cancella tutto": "cancella tutto"
       }
     },
     "config": {

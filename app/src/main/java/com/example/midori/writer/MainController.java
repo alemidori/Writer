@@ -190,20 +190,27 @@ public class MainController implements SafeTapListener {
                                 toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
                                 toast.show();
                             }
-
                             break;
                         case "riproduci":
                             toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
                             toast.show();
                             break;
-                        case "elimina":
+                        case "cancella":
+                            if (RootActivity.getInputSection().getText().length() > 0) {
+                                Tree.getInstance().deleteChar(RootActivity.getInputSection().getText());
+                            } else {
+                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                            break;
+                        case "cancella tutto":
                             node = Tree.getInstance().deletePeriod(RootActivity.getInputSection().getText().toString());
                             if (node != null) {
                                 RootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
                                 toast = Toast.makeText(RootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
