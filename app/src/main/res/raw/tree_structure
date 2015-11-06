@@ -7,31 +7,31 @@
         "c": "C"
       },
       "frasi": {
-        "f1": "Hello World!",
-        "f2": "abababa"
+        "Hello World": "Hello World!",
+        "abababa": "abababa"
       },
       "comandi": {
-        "c1": "salva",
-        "c2": "riproduci",
-        "c3": "elimina"
+        "salva": "salva",
+        "riproduci": "riproduci",
+        "elimina": "elimina"
       }
     },
     "config": {
       "tocco": {
-        "t1": "disabilita",
-        "t2": "breve",
-        "t3": "medio",
-        "t4": "lungo"
+        "disabilita": "disabilita",
+        "breve": "breve",
+        "medio": "medio",
+        "lungo": "lungo"
       },
       "audio": {
-        "a1": "muto",
-        "a2": "basso",
-        "a3": "alto"
+        "muto": "muto",
+        "basso": "basso",
+        "alto": "alto"
       },
       "layout": {
-        "l1": "2x1",
-        "l2": "2x2",
-        "l3": "4x2"
+        "2x1": "2x1",
+        "2x2": "2x2",
+        "4x2": "4x2"
       }
     }
   }
