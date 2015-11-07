@@ -33,7 +33,7 @@
             android:background="#cccccc" />
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/button2"
+            android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:text=">"

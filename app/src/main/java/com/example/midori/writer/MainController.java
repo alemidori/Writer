@@ -3,26 +3,24 @@ package com.example.midori.writer;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by Alessandra on 22/10/15.
  */
 public class MainController implements SafeTapListener {
-    private static MainController instance;
     private SafeButton button, next;
+    private List<SafeButton> selectableButtons;
     private Node node;
     private TreeNode actual;
     private int i;
 
-    public static MainController getInstance() {
-        if (instance == null)
-            instance = new MainController();
-        return instance;
-    }
 
-    private MainController() {
+    public MainController() {
         Tree.getInstance();
+        selectableButtons = RootActivity.getButtonList();
+        System.out.println("LISTA PULSANTI "+RootActivity.getButtonList().get(0).getText());
         button = RootActivity.getSelectableButton();
         button.setOnSafeTapListener(this);
         next = RootActivity.getNextButton();
@@ -36,6 +34,7 @@ public class MainController implements SafeTapListener {
 
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
+
 
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
@@ -64,45 +63,68 @@ public class MainController implements SafeTapListener {
 
 
         // SELECTABLE BUTTON
-        else {
-            //se è un nodo di goPrevLevel
-            if (Objects.equals(button.getText(), "^")) {
-                if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config")) {
-                    RootActivity.getTopText().setText("");
-                    actual = node.getTreeNode().parent;
-                    node = Tree.getInstance().getNodeFromText((String) actual.data);
-                    Log.d("1", (String) node.getTreeNode().data);
-                } else {
-                    Log.d("1", (String) node.getTreeNode().data);
-                    RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
-                    actual = actual.parent;
-                    node = Tree.getInstance().getNodeFromText((String) actual.data);
-                    i = actual.parent.children.indexOf(actual);
-                    RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-                }
-            }
-            //se è un nodo interno all'albero
-            else if (node.isInternal()) {
-                if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
-                    RootActivity.getTopText().setText((CharSequence) actual.data);
-                else
-                    RootActivity.getTopText().append(" > " + actual.data);
-                i = 0;
-                Log.d("1", (String) node.getTreeNode().data);
-                actual = (TreeNode) actual.children.get(i);
-                node = Tree.getInstance().getNodeFromText((String) actual.data);
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-
-            }
-            //se è una foglia
-            else {
-                doAction((LeafNode) button.getNode());
-            }
-
-        }
+        else
+            setInDifferentLayouts();
         return false;
     }
 
+    private void setInDifferentLayouts() {
+        TreeNode actualNode;
+        switch (RootActivity.getLayoutValue()) {
+
+            //CASO 1: due pulsanti
+            case 1:
+                twoButtonsLayout();
+                break;
+
+            //CASO 2: quattro pulsanti
+            case 2:
+                for (int i = 3; i > 0; i--) {
+                    actualNode = (TreeNode) node.getTreeNode().children.get(node.getTreeNode().children.size() - 1);
+                    selectableButtons.get(i).setText((CharSequence) actualNode.data);
+                }
+                break;
+            default: twoButtonsLayout();
+                break;
+
+        }
+    }
+
+    private void twoButtonsLayout(){
+        //se è un nodo di goPrevLevel
+        if (Objects.equals(button.getText(), "^")) {
+            if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config")) {
+                RootActivity.getTopText().setText("");
+                actual = node.getTreeNode().parent;
+                node = Tree.getInstance().getNodeFromText((String) actual.data);
+                Log.d("1", (String) node.getTreeNode().data);
+            } else {
+                Log.d("1", (String) node.getTreeNode().data);
+                RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
+                actual = actual.parent;
+                node = Tree.getInstance().getNodeFromText((String) actual.data);
+                i = actual.parent.children.indexOf(actual);
+                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
+            }
+        }
+        //se è un nodo interno all'albero
+        else if (node.isInternal()) {
+            if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
+                RootActivity.getTopText().setText((CharSequence) actual.data);
+            else
+                RootActivity.getTopText().append(" > " + actual.data);
+            i = 0;
+            Log.d("1", (String) node.getTreeNode().data);
+            actual = (TreeNode) actual.children.get(i);
+            node = Tree.getInstance().getNodeFromText((String) actual.data);
+            RootActivity.getSelectableButton().setText((CharSequence) actual.data);
+
+        }
+        //se è una foglia
+        else {
+            doAction((LeafNode) button.getNode());
+        }
+    }
 
     private void doAction(LeafNode lf) {
         switch (lf.getAction()) {
@@ -159,13 +181,13 @@ public class MainController implements SafeTapListener {
                     new Exception("Formato errato").printStackTrace();
                 else {
                     switch ((String) lf.getAttribute()) {
-                        case "2x1-portrait":
+                        case "2x1":
                             RootActivity.setLayoutValue(1);
                             break;
-                        case "2x2-portrait":
+                        case "2x2":
                             RootActivity.setLayoutValue(2);
                             break;
-                        case "4x2-portrait":
+                        case "4x2":
                             RootActivity.setLayoutValue(3);
                             break;
                         default:
@@ -173,6 +195,7 @@ public class MainController implements SafeTapListener {
                             break;
                     }
 
+                    System.out.println("LAYOUT "+RootActivity.getLayoutValue());
                     RootActivity.getInstanceRootActivity().recreate();
 
                 }
@@ -223,7 +246,7 @@ public class MainController implements SafeTapListener {
                 }
                 break;
             default:
-                RootActivity.getSelectableButton().setText("foglia");
+                RootActivity.getSelectableButton().setText("eh?");
                 break;
         }
     }

@@ -24,7 +24,7 @@
         android:layout_height="80dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/concession_btn"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -36,7 +36,7 @@
             android:layout_height="fill_parent"
             android:text="test2"
             android:layout_weight="1"
-            />
+            android:id="@+id/button2" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,7 +44,7 @@
         android:layout_height="80dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/test_2"
+            android:id="@+id/button3"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test3"
@@ -56,7 +56,7 @@
             android:layout_height="fill_parent"
             android:text="test4"
             android:layout_weight="1"
-            />
+            android:id="@+id/button4" />
     </LinearLayout>
 
 
@@ -65,7 +65,7 @@
         android:layout_height="80dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/test_3"
+            android:id="@+id/button5"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test5"
@@ -77,7 +77,7 @@
             android:layout_height="fill_parent"
             android:text="test6"
             android:layout_weight="1"
-             />
+            android:id="@+id/button6" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,7 +85,7 @@
         android:layout_height="80dp">
 
         <com.example.midori.writer.SafeButton
-            android:id="@+id/test_4"
+            android:id="@+id/button7"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test7"
@@ -96,6 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:text="test8"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:id="@+id/next" />
     </LinearLayout>
 </LinearLayout>
