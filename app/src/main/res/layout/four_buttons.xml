@@ -28,15 +28,16 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:text="test1"
-            />
+            android:layout_margin="1dp"
+            android:background="#cccccc" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:text="test2"
             android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:background="#cccccc" />
             />
     </LinearLayout>
 
@@ -46,18 +47,21 @@
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button3"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:text="test3"
             android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:background="#cccccc"
             />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/next"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:text=">"
             android:layout_weight="1"
+            android:layout_margin="1dp"
+            android:background="#cccccc"
             />
     </LinearLayout>
 

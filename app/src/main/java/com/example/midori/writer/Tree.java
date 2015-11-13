@@ -22,6 +22,7 @@ public class Tree {
     private JsonReader reader;
     private TreeNode lastParentNode,frasi;
     private List<Node> nodeList = new ArrayList<>();
+    private RootActivity rootActivity;
 
     public static Tree getInstance() {
         if (instance == null)
@@ -31,7 +32,8 @@ public class Tree {
 
 
     private Tree() {
-        reader = new JsonReader(new InputStreamReader(RootActivity.getFileInput()));
+        rootActivity = RootActivity.getInstanceRootActivity();
+        reader = new JsonReader(new InputStreamReader(rootActivity.getFileInput()));
         parseJSON();
 
     }
@@ -47,6 +49,7 @@ public class Tree {
                     obj = reader.nextName();
                     TreeNode firstNode = new TreeNode<>(obj);
                     lastParentNode = firstNode;
+                    nodeList.add(new Node(lastParentNode));
                     System.out.println("PRIMO " + lastParentNode.data);
 
                 } else {
@@ -133,8 +136,8 @@ public class Tree {
     }
 
     public void deleteChar(CharSequence cs){
-            CharSequence withoutLast = cs.subSequence(0, RootActivity.getInputSection().getText().length() - 1);
-            RootActivity.getInputSection().setText(withoutLast);
+            CharSequence withoutLast = cs.subSequence(0, rootActivity.getInputSection().getText().length() - 1);
+            rootActivity.getInputSection().setText(withoutLast);
     }
 
     public Node deletePeriod(String period) {
@@ -150,7 +153,7 @@ public class Tree {
             }
         }
         if (nextPeriod != null) {
-            RootActivity.getInputSection().setText("");
+            rootActivity.getInputSection().setText("");
             return nextPeriod;
         } else return null;
 

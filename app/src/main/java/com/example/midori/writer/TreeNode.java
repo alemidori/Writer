@@ -30,10 +30,5 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
         return childNode;
     }
 
-//    public void addChild(TreeNode child) {
-//        child.parent = this;
-//        this.children.add(child);
-//    }
-//
 
 }

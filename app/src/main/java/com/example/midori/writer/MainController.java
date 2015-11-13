@@ -3,6 +3,7 @@ package com.example.midori.writer;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,121 +11,88 @@ import java.util.Objects;
  * Created by Alessandra on 22/10/15.
  */
 public class MainController implements SafeTapListener {
-    private SafeButton button, next;
-    private List<SafeButton> selectableButtons;
+    private RootActivity rootActivity;
+    private SafeButton next;
+    private List<TreeNode> subList;
     private Node node;
-    private TreeNode actual;
-    private int i;
+    private TreeNode actualParent, rootTreeNode;
+    private int numSelectableButton;
 
 
     public MainController() {
-        Tree.getInstance();
-        selectableButtons = RootActivity.getButtonList();
-        System.out.println("LISTA PULSANTI "+RootActivity.getButtonList().get(0).getText());
-        button = RootActivity.getSelectableButton();
-        button.setOnSafeTapListener(this);
-        next = RootActivity.getNextButton();
+        rootActivity = RootActivity.getInstanceRootActivity();
+        List<SafeButton> selectableButtons = rootActivity.getButtonList();
+
+        for (SafeButton s : selectableButtons) {
+            s.setOnSafeTapListener(this);
+        }
+
+        Node root = Tree.getInstance().getNodeFromText("root");
+        rootTreeNode = root.getTreeNode();
+        numSelectableButton = selectableButtons.size();
+        System.out.println("Num puls "+numSelectableButton);
+        subList = rootActivity.spreadInButtons(rootTreeNode.children, numSelectableButton);
+
+        actualParent = rootTreeNode;
+
+        next = rootActivity.getNextButton();
         next.setOnSafeTapListener(this);
-        node = button.getNode();
-        actual = node.getTreeNode();
-        RootActivity.getTopText().setText((CharSequence) button.getNode().getTreeNode().parent.data);
-        i = 0;
+        rootActivity.getTopText().setText((CharSequence) actualParent.data);
     }
 
 
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
 
+        node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
-            TreeNode nextNode;
-            if (Objects.equals(RootActivity.getSelectableButton().getText(), "^")) {
-                i = 0;
-                nextNode = (TreeNode) actual.parent.children.get(i);
-                actual = nextNode;
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-            } else if (i < actual.parent.children.size() - 1) {
-                Log.d("1", (String) actual.parent.data);
-                i++;
-                nextNode = (TreeNode) actual.parent.children.get(i);
-                actual = nextNode;
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-            } else if (Objects.equals(actual.parent.data, "root")) {
-                i = 0;
-                nextNode = (TreeNode) actual.parent.children.get(i);
-                actual = nextNode;
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-                Log.d("1", (String) actual.data);
+
+            if (Objects.equals(rootActivity.getLastButton().getText(), "^")) {
+                subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+            } else if (subList == null) {
+                for(SafeButton b: rootActivity.getButtonList()){
+                    b.setText("");
+                }
+                rootActivity.getLastButton().setText("^");
             } else {
-                RootActivity.getSelectableButton().setText("^");
+                System.out.println(subList.size());
+                List<TreeNode> newSubList = rootActivity.spreadInButtons(subList, numSelectableButton);
+                subList = newSubList;
             }
+
         }
 
 
         // SELECTABLE BUTTON
         else
-            setInDifferentLayouts();
+            //se è un nodo di goPrevLevel
+            if (Objects.equals(rootActivity.getLastButton().getText(), "^")) {
+                if (Objects.equals(actualParent, rootTreeNode)) {
+                    rootActivity.getTopText().setText("");
+                } else {
+                    subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
+                    actualParent = actualParent.parent;
+                    rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + actualParent.data, ""));
+                }
+            }
+            //se è un nodo interno all'albero
+            else if (node.isInternal()) {
+
+                rootActivity.getTopText().append(" > " + safeButton.getText());
+                node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
+                actualParent = node.getTreeNode();
+                subList = rootActivity.spreadInButtons(node.getTreeNode().children, numSelectableButton);
+
+            }
+            //se è una foglia
+            else {
+                doAction((LeafNode) safeButton.getNode());
+            }
         return false;
     }
 
-    private void setInDifferentLayouts() {
-        TreeNode actualNode;
-        switch (RootActivity.getLayoutValue()) {
-
-            //CASO 1: due pulsanti
-            case 1:
-                twoButtonsLayout();
-                break;
-
-            //CASO 2: quattro pulsanti
-            case 2:
-                for (int i = 3; i > 0; i--) {
-                    actualNode = (TreeNode) node.getTreeNode().children.get(node.getTreeNode().children.size() - 1);
-                    selectableButtons.get(i).setText((CharSequence) actualNode.data);
-                }
-                break;
-            default: twoButtonsLayout();
-                break;
-
-        }
-    }
-
-    private void twoButtonsLayout(){
-        //se è un nodo di goPrevLevel
-        if (Objects.equals(button.getText(), "^")) {
-            if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config")) {
-                RootActivity.getTopText().setText("");
-                actual = node.getTreeNode().parent;
-                node = Tree.getInstance().getNodeFromText((String) actual.data);
-                Log.d("1", (String) node.getTreeNode().data);
-            } else {
-                Log.d("1", (String) node.getTreeNode().data);
-                RootActivity.getTopText().setText(RootActivity.getTopText().getText().toString().replace(" > " + actual.parent.data, ""));
-                actual = actual.parent;
-                node = Tree.getInstance().getNodeFromText((String) actual.data);
-                i = actual.parent.children.indexOf(actual);
-                RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-            }
-        }
-        //se è un nodo interno all'albero
-        else if (node.isInternal()) {
-            if (Objects.equals(actual.data, "main") || Objects.equals(actual.data, "config"))
-                RootActivity.getTopText().setText((CharSequence) actual.data);
-            else
-                RootActivity.getTopText().append(" > " + actual.data);
-            i = 0;
-            Log.d("1", (String) node.getTreeNode().data);
-            actual = (TreeNode) actual.children.get(i);
-            node = Tree.getInstance().getNodeFromText((String) actual.data);
-            RootActivity.getSelectableButton().setText((CharSequence) actual.data);
-
-        }
-        //se è una foglia
-        else {
-            doAction((LeafNode) button.getNode());
-        }
-    }
 
     private void doAction(LeafNode lf) {
         switch (lf.getAction()) {
@@ -133,9 +101,9 @@ public class MainController implements SafeTapListener {
                     new Exception("Formato errato").printStackTrace();
                 else {
                     if (lf.getAttribute().toString().length() == 1)
-                        RootActivity.getInputSection().append((CharSequence) lf.getAttribute());
+                        rootActivity.getInputSection().append((CharSequence) lf.getAttribute());
                     else
-                        RootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
+                        rootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
                 }
                 break;
             case LeafNode.ACTION_SET_TOUCH_DURATION:
@@ -164,7 +132,7 @@ public class MainController implements SafeTapListener {
                             toShow = "Errore nella scelta della durata del tocco.";
                             break;
                     }
-                    toast = Toast.makeText(RootActivity.getContext(), toShow, Toast.LENGTH_LONG);
+                    toast = Toast.makeText(rootActivity.getContext(), toShow, Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
@@ -172,7 +140,7 @@ public class MainController implements SafeTapListener {
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
                 else {
-                    toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(rootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
@@ -182,21 +150,21 @@ public class MainController implements SafeTapListener {
                 else {
                     switch ((String) lf.getAttribute()) {
                         case "2x1":
-                            RootActivity.setLayoutValue(1);
+                            rootActivity.setLayoutValue(1);
                             break;
                         case "2x2":
-                            RootActivity.setLayoutValue(2);
+                            rootActivity.setLayoutValue(2);
                             break;
                         case "4x2":
-                            RootActivity.setLayoutValue(3);
+                            rootActivity.setLayoutValue(3);
                             break;
                         default:
-                            RootActivity.setLayoutValue(1);
+                            rootActivity.setLayoutValue(1);
                             break;
                     }
 
-                    System.out.println("LAYOUT "+RootActivity.getLayoutValue());
-                    RootActivity.getInstanceRootActivity().recreate();
+                    System.out.println("LAYOUT " + rootActivity.getLayoutValue());
+                    rootActivity.recreate();
 
                 }
                 break;
@@ -206,39 +174,39 @@ public class MainController implements SafeTapListener {
                 else {
                     switch ((String) lf.getAttribute()) {
                         case "salva":
-                            if (Tree.getInstance().savePeriod(RootActivity.getInputSection().getText().toString())) {
-                                toast = Toast.makeText(RootActivity.getContext(), "Frase salvata.", Toast.LENGTH_LONG);
+                            if (Tree.getInstance().savePeriod(rootActivity.getInputSection().getText().toString())) {
+                                toast = Toast.makeText(rootActivity.getContext(), "Frase salvata.", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
                         case "riproduci":
-                            toast = Toast.makeText(RootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
+                            toast = Toast.makeText(rootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
                             toast.show();
                             break;
                         case "cancella":
-                            if (RootActivity.getInputSection().getText().length() > 0) {
-                                Tree.getInstance().deleteChar(RootActivity.getInputSection().getText());
+                            if (rootActivity.getInputSection().getText().length() > 0) {
+                                Tree.getInstance().deleteChar(rootActivity.getInputSection().getText());
                             } else {
-                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
                         case "cancella tutto":
-                            node = Tree.getInstance().deletePeriod(RootActivity.getInputSection().getText().toString());
+                            node = Tree.getInstance().deletePeriod(rootActivity.getInputSection().getText().toString());
                             if (node != null) {
-                                RootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
-                                toast = Toast.makeText(RootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
+                                //rootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
+                                toast = Toast.makeText(rootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                toast = Toast.makeText(RootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
                         default:
-                            toast = Toast.makeText(RootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);
+                            toast = Toast.makeText(rootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);
                             toast.show();
                             break;
                     }
@@ -246,7 +214,7 @@ public class MainController implements SafeTapListener {
                 }
                 break;
             default:
-                RootActivity.getSelectableButton().setText("eh?");
+                //rootActivity.getSelectableButton().setText("eh?");
                 break;
         }
     }
