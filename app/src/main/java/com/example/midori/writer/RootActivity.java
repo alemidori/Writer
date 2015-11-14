@@ -19,8 +19,7 @@ public class RootActivity extends Activity {
     private Context context;
     private SafeButton lastButton, nextButton;
     private TextView topText;
-    private int layoutValue;
-    private int numSelectableButtons;
+    public  static int layoutValue;
     private List<SafeButton> buttonList;
 
     public SafeButton getLastButton() {
@@ -37,10 +36,6 @@ public class RootActivity extends Activity {
 
     public InputStream getFileInput() {
         return fileInput;
-    }
-
-    public void setLayoutValue(int layoutValue) {
-        this.layoutValue = layoutValue;
     }
 
     public Context getContext() {
@@ -74,7 +69,7 @@ public class RootActivity extends Activity {
         rootActivity = this;
         context = this.getApplicationContext();
         buttonList = new ArrayList<>();
-        numSelectableButtons = 0;
+        System.out.println("puls " + layoutValue);
         SafeButton newButton;
 
 
@@ -97,7 +92,7 @@ public class RootActivity extends Activity {
                     newButton = (SafeButton) findViewById(resID);
                     buttonList.add(newButton);
                     nextButton = (SafeButton) findViewById(R.id.next);
-                    numSelectableButtons = buttonList.size();
+
                 }
                 break;
             case 3:
@@ -109,27 +104,17 @@ public class RootActivity extends Activity {
                     newButton = (SafeButton) findViewById(resID);
                     buttonList.add(newButton);
                     nextButton = (SafeButton) findViewById(R.id.next);
-                    numSelectableButtons = buttonList.size();
+
                 }
                 break;
             default:
-                setContentView(R.layout.four_buttons);
-                buttonList.clear();
-                for (int i = 0; i < 3; i++) {
-                    String buttonID = "button" + (i + 1);
-                    int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
-                    newButton = (SafeButton) findViewById(resID);
-                    buttonList.add(newButton);
-                    nextButton = (SafeButton) findViewById(R.id.next);
-                    numSelectableButtons = buttonList.size();
-                }
 
-//                setContentView(R.layout.two_buttons);
-//                buttonList.clear();
-//                newButton = (SafeButton) findViewById(R.id.button1);
-//                nextButton = (SafeButton) findViewById(R.id.next);
-//                buttonList.add(newButton);
-//                numSelectableButtons = buttonList.size();
+                setContentView(R.layout.two_buttons);
+                buttonList.clear();
+                newButton = (SafeButton) findViewById(R.id.button1);
+                nextButton = (SafeButton) findViewById(R.id.next);
+                buttonList.add(newButton);
+
 
                 break;
         }
@@ -141,7 +126,7 @@ public class RootActivity extends Activity {
         topText = (TextView) findViewById(R.id.textView);
         inputSection = (EditText) findViewById(R.id.editText);
 
-        new MainController();
+        MainController.getInstance().initialize();
 
     }
 
@@ -151,17 +136,20 @@ public class RootActivity extends Activity {
 
             //se i selectable sono meno della lista
             if (list.size() >= numButt) {
-                for (int j = 0; j < numButt; j++) {
-                    buttonList.get(j).setText((CharSequence) list.get(j).data);
+                int i = 0;
+                while (i < numButt) {
+                    buttonList.get(i).setText((CharSequence) list.get(i).data);
+                    i++;
                 }
+
             } else {
                 //se i selectable sono più della lista
-                int i = buttonList.size()-1;
-                int j = list.size()-1;
-                    while (i>0) {
-                        buttonList.get(i).setText((CharSequence) list.get(j).data);
-                        i--;
-                        j--;
+                int i = numButt - 1;
+                int j = list.size() - 1;
+                while (i >= 0 && j>=0) {
+                    buttonList.get(i).setText((CharSequence) list.get(j).data);
+                    i--;
+                    j--;
                 }
 
             }

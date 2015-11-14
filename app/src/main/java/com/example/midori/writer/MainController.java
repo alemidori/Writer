@@ -11,35 +11,40 @@ import java.util.Objects;
  * Created by Alessandra on 22/10/15.
  */
 public class MainController implements SafeTapListener {
+    private static MainController instance;
     private RootActivity rootActivity;
     private SafeButton next;
     private List<TreeNode> subList;
     private Node node;
+    private List<SafeButton> selectableButtons;
     private TreeNode actualParent, rootTreeNode;
     private int numSelectableButton;
 
+    public static MainController getInstance() {
+        if (instance == null)
+            instance = new MainController();
+        return instance;
+    }
 
-    public MainController() {
+    private MainController() {
+        Node root = Tree.getInstance().getNodeFromText("root");
+        rootTreeNode = root.getTreeNode();
+        actualParent = rootTreeNode;
+    }
+
+    public void initialize(){
         rootActivity = RootActivity.getInstanceRootActivity();
-        List<SafeButton> selectableButtons = rootActivity.getButtonList();
-
+        selectableButtons = rootActivity.getButtonList();
+        numSelectableButton = selectableButtons.size();
+        subList = rootActivity.spreadInButtons(rootTreeNode.children, numSelectableButton);
+        next = rootActivity.getNextButton();
         for (SafeButton s : selectableButtons) {
             s.setOnSafeTapListener(this);
         }
-
-        Node root = Tree.getInstance().getNodeFromText("root");
-        rootTreeNode = root.getTreeNode();
-        numSelectableButton = selectableButtons.size();
-        System.out.println("Num puls "+numSelectableButton);
-        subList = rootActivity.spreadInButtons(rootTreeNode.children, numSelectableButton);
-
-        actualParent = rootTreeNode;
-
-        next = rootActivity.getNextButton();
+        System.out.println("Num puls " + numSelectableButton);
         next.setOnSafeTapListener(this);
         rootActivity.getTopText().setText((CharSequence) actualParent.data);
     }
-
 
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
@@ -52,12 +57,19 @@ public class MainController implements SafeTapListener {
             if (Objects.equals(rootActivity.getLastButton().getText(), "^")) {
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
             } else if (subList == null) {
-                for(SafeButton b: rootActivity.getButtonList()){
+                if (actualParent == rootTreeNode) {
+                    subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+                } else {
+                    for (SafeButton b : rootActivity.getButtonList()) {
+                        b.setText("");
+                    }
+                    rootActivity.getLastButton().setText("^");
+                }
+            } else {
+
+                for (SafeButton b : rootActivity.getButtonList()) {
                     b.setText("");
                 }
-                rootActivity.getLastButton().setText("^");
-            } else {
-                System.out.println(subList.size());
                 List<TreeNode> newSubList = rootActivity.spreadInButtons(subList, numSelectableButton);
                 subList = newSubList;
             }
@@ -65,6 +77,8 @@ public class MainController implements SafeTapListener {
         }
 
 
+
+        //TODO da rivedere la mappa ipertesuale (il "dove mi trovo?")
         // SELECTABLE BUTTON
         else
             //se è un nodo di goPrevLevel
@@ -79,8 +93,13 @@ public class MainController implements SafeTapListener {
             }
             //se è un nodo interno all'albero
             else if (node.isInternal()) {
-
-                rootActivity.getTopText().append(" > " + safeButton.getText());
+                if (node.getTreeNode().parent == actualParent) {
+                    rootActivity.getTopText().append(" > " + safeButton.getText());
+                }
+                else{
+                    rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + node.getTreeNode().parent.data, ""));
+                    rootActivity.getTopText().append(" > " + safeButton.getText());
+                }
                 node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
                 actualParent = node.getTreeNode();
                 subList = rootActivity.spreadInButtons(node.getTreeNode().children, numSelectableButton);
@@ -150,21 +169,22 @@ public class MainController implements SafeTapListener {
                 else {
                     switch ((String) lf.getAttribute()) {
                         case "2x1":
-                            rootActivity.setLayoutValue(1);
+                            RootActivity.layoutValue = 1;
                             break;
                         case "2x2":
-                            rootActivity.setLayoutValue(2);
+                            RootActivity.layoutValue = 2;
                             break;
                         case "4x2":
-                            rootActivity.setLayoutValue(3);
+                            RootActivity.layoutValue = 3;
                             break;
                         default:
-                            rootActivity.setLayoutValue(1);
+                            RootActivity.layoutValue = 4;
                             break;
                     }
 
-                    System.out.println("LAYOUT " + rootActivity.getLayoutValue());
                     rootActivity.recreate();
+                    System.out.println("LAYOUT " + rootActivity.getLayoutValue());
+
 
                 }
                 break;
