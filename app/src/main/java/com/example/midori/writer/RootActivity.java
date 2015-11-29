@@ -8,19 +8,42 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class RootActivity extends Activity {
+    private Configurations configurations;
+    private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
-    private InputStream fileInput;
+    private InputStream fileInput,fileFrasi;
     private Context context;
     private SafeButton lastButton, nextButton;
     private TextView topText;
-    public  static int layoutValue;
+    private static int layoutValue;
     private List<SafeButton> buttonList;
+    private OutputStream fileFrasiOut;
+
+    public Configurations getConfigurations() {
+        return configurations;
+    }
+
+    public String getTocco() {
+        return toccoDefault;
+    }
+
+    public String getAudio() {
+        return audioDefault;
+    }
+
+    public static void setLayoutValue(int layoutValue) {
+        RootActivity.layoutValue = layoutValue;
+    }
 
     public SafeButton getLastButton() {
         return lastButton;
@@ -36,6 +59,15 @@ public class RootActivity extends Activity {
 
     public InputStream getFileInput() {
         return fileInput;
+    }
+
+    public InputStream getFileFrasi() {
+        return fileFrasi;
+    }
+
+
+    public OutputStream getFileFrasiOut() {
+        return fileFrasiOut;
     }
 
     public Context getContext() {
@@ -65,9 +97,40 @@ public class RootActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fileInput = this.getResources().openRawResource(R.raw.tree_structure);
         rootActivity = this;
         context = this.getApplicationContext();
+
+        configurations = new Configurations();
+        if (!configurations.preferences.contains("tocco"))
+            toccoDefault = configurations.setConfigurations("tocco", "breve");
+        else
+            toccoDefault = configurations.preferences.getString("tocco", "breve");
+
+        System.out.println("Tocco default " + toccoDefault);
+
+        if (!configurations.preferences.contains("audio"))
+            audioDefault = configurations.setConfigurations("audio", "basso");
+        else
+            audioDefault = configurations.preferences.getString("audio", "basso");
+
+        System.out.println("Audio default "+audioDefault);
+
+        if (!configurations.preferences.contains("layout")) {
+            String layoutValueString = configurations.setConfigurations("layout", "1");
+            layoutValue = Integer.parseInt(layoutValueString);
+        } else
+            layoutValue = Integer.parseInt(configurations.preferences.getString("layout", "1"));
+
+        System.out.println("layout default "+layoutValue);
+
+
+        fileInput = this.getResources().openRawResource(R.raw.tree_structure);
+        fileFrasi = this.getResources().openRawResource(R.raw.frasi);
+        try {
+            fileFrasiOut = new FileOutputStream(this.getResources().getResourcePackageName(R.raw.frasi));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         buttonList = new ArrayList<>();
         System.out.println("puls " + layoutValue);
         SafeButton newButton;
@@ -143,10 +206,14 @@ public class RootActivity extends Activity {
                 }
 
             } else {
+                for (SafeButton b : buttonList) {
+                    b.setText("");
+                }
                 //se i selectable sono più della lista
-                int i = numButt - 1;
+                int i = numButt - 2;
                 int j = list.size() - 1;
-                while (i >= 0 && j>=0) {
+                lastButton.setText("^");
+                while (i >= 0 && j >= 0) {
                     buttonList.get(i).setText((CharSequence) list.get(j).data);
                     i--;
                     j--;

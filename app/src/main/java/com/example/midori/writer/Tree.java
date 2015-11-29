@@ -2,10 +2,10 @@ package com.example.midori.writer;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
+
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class Tree {
     private TreeNode lastParentNode,frasi;
     private List<Node> nodeList = new ArrayList<>();
     private RootActivity rootActivity;
+    private  BufferedReader br;
 
     public static Tree getInstance() {
         if (instance == null)
@@ -34,12 +35,14 @@ public class Tree {
     private Tree() {
         rootActivity = RootActivity.getInstanceRootActivity();
         reader = new JsonReader(new InputStreamReader(rootActivity.getFileInput()));
+        br = new BufferedReader(new InputStreamReader(rootActivity.getFileFrasi()));
         parseJSON();
 
     }
 
 
     private void parseJSON() {
+
         boolean flag = false;
         try {
             reader.beginObject();
@@ -68,6 +71,7 @@ public class Tree {
                     parseJSON();
                 } else {
                     //foglia
+
                     System.out.println(reader.peek());
                     int action = 0;
                     TreeNode childNode = lastParentNode.addChild(obj);
@@ -76,8 +80,7 @@ public class Tree {
                         case "lettere":
                             action = LeafNode.ACTION_INSERT_TEXT;
                             break;
-                        case "frasi":
-                            frasi=lastParentNode;
+                        case "raw/frasi":
                             action = LeafNode.ACTION_INSERT_TEXT;
                             break;
                         case "comandi":
@@ -128,11 +131,32 @@ public class Tree {
         if (Objects.equals(period, ""))
             toReturn = false;
         else {
+            frasi = getNodeFromText("frasi").getTreeNode();
             TreeNode newPeriod = frasi.addChild(period);
             nodeList.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
+            DataOutputStream dataOutputStream = new DataOutputStream(rootActivity.getFileFrasiOut());
+            try {
+                dataOutputStream.writeBytes(period);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             toReturn = true;
         }
         return toReturn;
+    }
+
+    public boolean readFilePeriods(){
+        frasi = getNodeFromText("frasi").getTreeNode();
+        String s;
+        try {
+            while ((s=br.readLine())!=null){
+                frasi.addChild(s);
+                nodeList.add(new LeafNode(new TreeNode(s),LeafNode.ACTION_INSERT_TEXT,s));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return !frasi.children.isEmpty();
     }
 
     public void deleteChar(CharSequence cs){

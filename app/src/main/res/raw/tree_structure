@@ -7,14 +7,15 @@
         "c": "C"
       },
       "frasi": {
-        "Hello World": "Hello World!",
-        "abababa": "abababa"
       },
       "comandi": {
+        "spazio":"",
         "salva": "salva",
         "riproduci": "riproduci",
         "cancella": "cancella",
-        "cancella tutto": "cancella tutto"
+        "cancella tutto": "cancella tutto",
+        "invia come e-mail": "invia come e-mail",
+        "invia come sms": "invia come sms"
       }
     },
     "config": {
