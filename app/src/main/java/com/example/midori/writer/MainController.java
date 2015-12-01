@@ -68,17 +68,21 @@ public class MainController implements SafeTapListener {
         rootActivity.getTopText().setText((CharSequence) actualParent.data);
     }
 
+
+
+    //**********************************************************************************************************
+    //ON SAFE TAP
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
 
         String textButton = (String) safeButton.getText();
         System.out.println(textButton);
+
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
 
             if (Objects.equals(rootActivity.getLastButton().getText(), "^")) {
 
-//                List<TreeNode> reList = Tree.getInstance().getNodeFromText((String) rootActivity.getButtonList().get(rootActivity.getButtonList().size() - 2).getText()).getTreeNode().parent.children;
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
             } else if (subList == null) {

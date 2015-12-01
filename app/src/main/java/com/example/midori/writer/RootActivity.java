@@ -21,7 +21,9 @@ public class RootActivity extends Activity {
     private Configurations configurations;
     private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
-    private InputStream fileInput,fileFrasi;
+    private InputStream fileInput;
+    private InputStream fileFrasi;
+    private InputStream fileFrasiJson;
     private Context context;
     private SafeButton lastButton, nextButton;
     private TextView topText;
@@ -63,6 +65,10 @@ public class RootActivity extends Activity {
 
     public InputStream getFileFrasi() {
         return fileFrasi;
+    }
+
+    public InputStream getFileFrasiJson() {
+        return fileFrasiJson;
     }
 
 
@@ -126,6 +132,7 @@ public class RootActivity extends Activity {
 
         fileInput = this.getResources().openRawResource(R.raw.tree_structure);
         fileFrasi = this.getResources().openRawResource(R.raw.frasi);
+        fileFrasiJson =this.getResources().openRawResource(R.raw.frasi);
         try {
             fileFrasiOut = new FileOutputStream(this.getResources().getResourcePackageName(R.raw.frasi));
         } catch (FileNotFoundException e) {
