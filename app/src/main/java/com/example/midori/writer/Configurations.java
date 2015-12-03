@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
  * Created by Alessandra on 15/11/15.
  */
 public class Configurations {
-    public static final String CONF_FILE = "config";
+    private static final String CONF_FILE = "config";
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 

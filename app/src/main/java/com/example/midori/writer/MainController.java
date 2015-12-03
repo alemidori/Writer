@@ -125,12 +125,12 @@ public class MainController implements SafeTapListener {
                 node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
                 if (node.isInternal()) {
-                    if (Objects.equals(node.getTreeNode().data, "frasi")) {
-                        if (Tree.getInstance().readFilePeriods()) {
-                            actualParent = node.getTreeNode();
-                            subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-                        }
-                    } else {
+//                    if (Objects.equals(node.getTreeNode().data, "frasi")) {
+//                        if (Tree.getInstance().readFilePeriods()) {
+//                            actualParent = node.getTreeNode();
+//                            subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+//                        }
+//                    } else {
                         System.out.println("internal " + node.getTreeNode().data);
                         if (node.getTreeNode().parent == actualParent) {
                             rootActivity.getTopText().append(" > " + safeButton.getText());
@@ -145,7 +145,7 @@ public class MainController implements SafeTapListener {
                             b.setText("");
                         }
                         subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-                    }
+                    //}
 
 
                 }

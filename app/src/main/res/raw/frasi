@@ -6,7 +6,7 @@
         "b": "B",
         "c": "C"
       },
-      "frasi": {
+      "le mie frasi": {
         "Ciao!":"ciao",
         "Buongiorno!":"buongiorno",
         "Arrivederci, grazie.":"arrivederci"
@@ -17,6 +17,7 @@
         "riproduci": "riproduci",
         "cancella": "cancella",
         "cancella tutto": "cancella tutto",
+        "elimina frase": "elimina frase",
         "invia come e-mail": "invia come e-mail",
         "invia come sms": "invia come sms"
       }
