@@ -1,0 +1,62 @@
+{
+  "root": {
+    "Menu": {
+      "Alfabeto": {
+        "(spazio)":" ",
+        "a": "A",
+        "b": "B",
+        "c": "C",
+        "d":"D",
+        "e":"E",
+        "f":"F",
+        "g":"G",
+        "h":"H",
+        "i":"I",
+        "l":"L",
+        "m":"M",
+        "n":"N",
+        "o":"O",
+        "p":"P",
+        "q":"Q",
+        "r":"R",
+        "s":"S",
+        "t":"T",
+        "u":"U",
+        "v":"V",
+        "z":"Z"
+      },
+      "Le mie frasi": {
+        "Ciao!":"ciao",
+        "Buongiorno!":"buongiorno",
+        "Arrivederci, grazie.":"arrivederci"
+      },
+      "Azioni": {
+        "Salva": "salva",
+        "Riproduci": "riproduci",
+        "Cancella": "cancella",
+        "Cancella tutto": "cancella tutto",
+        "Elimina frase": "elimina frase",
+        "Invia come e-mail": "invia come e-mail",
+        "Invia come sms": "invia come sms"
+      }
+    },
+    "Configura": {
+      "Tocco": {
+        "Disabilita": "disabilita",
+        "Breve": "breve",
+        "Medio": "medio",
+        "Lungo": "lungo"
+      },
+      "Audio": {
+        "Muto": "muto",
+        "Basso": "basso",
+        "Alto": "alto"
+      },
+      "Layout": {
+        "2x1": "2x1",
+        "2x2": "2x2",
+        "4x2": "4x2"
+      }
+    }
+  }
+}

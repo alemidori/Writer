@@ -2,22 +2,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FF252525"
     android:padding="5dp">
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Benvenuto!"
         android:id="@+id/textView"
-        android:textColor="#000000"
-        android:textSize="12dp"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
         android:layout_marginBottom="50dp" />
 
     <EditText
-        android:cursorVisible="false"
+        android:cursorVisible="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginBottom="60dp"
+        android:elegantTextHeight="false"
+        android:fontFamily="@android:string/defaultMsisdnAlphaTag" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,20 +28,25 @@
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button1"
+            android:textSize="10pt"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc" />
+            android:background="#238283"
+            android:textColor="#ffffff"
+            android:nestedScrollingEnabled="false" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:text=">"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc" />
+            android:textColor="#4dcca7"
+            android:text="Avanti"
+            android:background="#238283"
+            />
     </LinearLayout>
 
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Alessandra on 06/10/15.
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class SafeButton extends Button {
     private List<SafeTapListener> safeTapListeners = new ArrayList<SafeTapListener>();
+    private static RootActivity rootActivity;
 
     //costanti intere per rappresentare le durate del tocco
     public final static int NO_SAFE_TOUCH = 0;
@@ -114,7 +116,10 @@ public class SafeButton extends Button {
         Runnable runnable = new Runnable() {
             public void run() {
                 if (isPressed) {
-                    actualButton.setBackgroundColor(Color.argb(255, 153, 153, 153));
+                    if (!Objects.equals(actualButton.getText(), ""))
+                        actualButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
+                    else
+                        actualButton.setClickable(false);
                 }
 
             }
@@ -127,7 +132,7 @@ public class SafeButton extends Button {
                 System.out.println(event.getAction());
                 break;
             case MotionEvent.ACTION_UP:
-                actualButton.setBackgroundColor(Color.LTGRAY);
+                actualButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
                 if (isPressed) {
                     isPressed = false;
                     handler.removeCallbacks(runnable);
@@ -142,6 +147,30 @@ public class SafeButton extends Button {
                 System.out.println(event.getAction());
         }
         return false;
+    }
+
+    public static String configureTouch(LeafNode lf) {
+        rootActivity = RootActivity.getInstanceRootActivity();
+        rootActivity.getConfigurations().setConfigurations("tocco", (String) lf.getAttribute());
+        String toShow;
+        switch ((String) lf.getAttribute()) {
+            case "Disabilita":
+                toShow = "Tocco 'safe' disabilitato.";
+                break;
+            case "Breve":
+                toShow = "Tocco breve impostato.";
+                break;
+            case "Medio":
+                toShow = "Tocoo medio impostato.";
+                break;
+            case "Lungo":
+                toShow = "Tocco lungo impostato.";
+                break;
+            default:
+                toShow = "Errore nella scelta della durata del tocco.";
+                break;
+        }
+        return toShow;
     }
 }
 

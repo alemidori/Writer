@@ -1,7 +1,6 @@
 package com.example.midori.writer;
 
-import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Path;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
@@ -11,14 +10,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +26,8 @@ import java.util.Objects;
 public class Tree {
     private static Tree instance;
     private String obj;
-    private String jsonString, frasiJsonString, frasiJson;
-    private JSONObject jsonObject, rootJsonObj, frasiJsonObj;
+    private String jsonString;
+    private JSONObject rootJsonObj, frasiJsonObj;
     private JsonReader reader;
     private TreeNode lastParentNode, frasi;
     private List<Node> nodeList = new ArrayList<>();
@@ -48,52 +44,33 @@ public class Tree {
 
     private Tree() {
         rootActivity = RootActivity.getInstanceRootActivity();
-        br = new BufferedReader(new InputStreamReader(rootActivity.getFileFrasi()));
+
+        gson = new Gson();
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream("../../../../src/main/jsonTree.txt");
+            System.out.println("File aperto");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        br = new BufferedReader(new InputStreamReader(rootActivity.getJsonFilePath()));
         writeJsonString();
-        reader = new JsonReader(new InputStreamReader(rootActivity.getFileFrasiJson()));
+        reader = new JsonReader(new InputStreamReader(rootActivity.getJsonFilePathToModify()));
         parseJSON();
 
     }
 
 
     private void writeJsonString() {
-        boolean flag = false;
         jsonString = "";
-        frasiJsonString = "";
-        frasiJson = "";
         String jsonLine;
         try {
             System.out.println("*********************************************");
             while ((jsonLine = br.readLine()) != null) {
                 jsonString += jsonLine + '\n';
-
-                if (flag) {
-                    if (jsonLine.endsWith("\"")) { //fine object frasi
-                        flag = false;
-                        frasiJsonString += jsonLine + '\n' + '\t' + "}" + '\n' + "}";
-                        frasiJson += "\t\t\t" + jsonLine + '\n' + "\t\t" + "}";
-                    } else {
-                        frasiJsonString += jsonLine + '\n' + '\t';
-                        frasiJson += "\t\t\t" + jsonLine + '\n';
-                    }
-                }
-                if (jsonLine.contains("\"le mie frasi\"")) {
-                    frasiJsonString += "{" + '\n' + '\t';
-                    frasiJson += "\t\t" + jsonLine + '\n';
-                    flag = true;
-                }
-
             }
-            System.out.println("\n\n\nAAAAAAAAAAA PROVAAAAAA" + jsonString);
-            System.out.println("\n\n\nBBBBBBBBBBB PROVAAAAAA" + frasiJsonString);
-            System.out.println("\n\n\nCCCCCCCCCCC PROVAAAAAA" + frasiJson);
-
-            gson = new Gson();
-            jsonObject = gson.fromJson(jsonString, JSONObject.class);
-//            frasiJsonObj = gson.fromJson(frasiJsonString, JSONObject.class);
             try {
                 rootJsonObj = new JSONObject(jsonString);
-                frasiJsonObj = new JSONObject(frasiJsonString);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -141,22 +118,22 @@ public class Tree {
                     TreeNode childNode = lastParentNode.addChild(obj);
                     System.out.println(lastParentNode.data + " genera > " + childNode.data);
                     switch ((String) lastParentNode.data) {
-                        case "lettere":
+                        case "Alfabeto":
                             action = LeafNode.ACTION_INSERT_TEXT;
                             break;
-                        case "raw/frasi":
+                        case "Le mie frasi":
                             action = LeafNode.ACTION_INSERT_TEXT;
                             break;
-                        case "comandi":
+                        case "Azioni":
                             action = LeafNode.COMMANDS;
                             break;
-                        case "tocco":
+                        case "Tocco":
                             action = LeafNode.ACTION_SET_TOUCH_DURATION;
                             break;
-                        case "audio":
+                        case "Audio":
                             action = LeafNode.ACTION_AUDIO_VOLUME;
                             break;
-                        case "layout":
+                        case "Layout":
                             action = LeafNode.LAYOUT;
                             break;
                         default:
@@ -196,31 +173,26 @@ public class Tree {
         if (Objects.equals(period, ""))
             toReturn = false;
         else {
-
-            // try {
-
             System.out.println("ASJNCKEBVIERBVBERVKRE\n" + gson.toJson(rootJsonObj));
-            System.out.println("ASJNCKEBV\n" + gson.toJson(frasiJsonObj));
 
             try {
                 JSONObject rootObj = rootJsonObj.getJSONObject("root");
-                JSONObject mainObj = rootObj.getJSONObject("main");
-                frasiJsonObj = mainObj.getJSONObject("le mie frasi");
+                JSONObject mainObj = rootObj.getJSONObject("Main");
+                frasiJsonObj = mainObj.getJSONObject("Le mie frasi");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                rootJsonObj.put("altrachiave", "altrovalore");
                 frasiJsonObj.put(period, period);
                 jsonString = gson.toJson(rootJsonObj);
                 System.out.println(jsonString);
                 System.out.println(gson.toJson(frasiJsonObj));
-                
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            frasi = getNodeFromText("le mie frasi").getTreeNode();
+            frasi = getNodeFromText("Le mie frasi").getTreeNode();
             TreeNode newPeriod = frasi.addChild(period);
             nodeList.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
             toReturn = true;
@@ -228,22 +200,6 @@ public class Tree {
         return toReturn;
     }
 
-
-
-
-    public boolean readFilePeriods() {
-        frasi = getNodeFromText("le mie frasi").getTreeNode();
-        String s;
-        try {
-            while ((s = br.readLine()) != null) {
-                frasi.addChild(s);
-                nodeList.add(new LeafNode(new TreeNode(s), LeafNode.ACTION_INSERT_TEXT, s));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return !frasi.children.isEmpty();
-    }
 
     public void deleteChar(CharSequence cs) {
         CharSequence withoutLast = cs.subSequence(0, rootActivity.getInputSection().getText().length() - 1);

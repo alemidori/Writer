@@ -2,6 +2,7 @@ package com.example.midori.writer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,15 +21,13 @@ public class RootActivity extends Activity {
     private Configurations configurations;
     private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
-    private InputStream fileInput;
-    private InputStream fileFrasi;
-    private InputStream fileFrasiJson;
+    private InputStream jsonFilePath;
+    private InputStream jsonFilePathToModify;
     private Context context;
     private SafeButton lastButton, nextButton;
     private TextView topText;
     private static int layoutValue;
     private List<SafeButton> buttonList;
-    private OutputStream fileFrasiOut;
 
     public Configurations getConfigurations() {
         return configurations;
@@ -43,10 +41,6 @@ public class RootActivity extends Activity {
         return audioDefault;
     }
 
-    public static void setLayoutValue(int layoutValue) {
-        RootActivity.layoutValue = layoutValue;
-    }
-
     public SafeButton getLastButton() {
         return lastButton;
     }
@@ -55,26 +49,14 @@ public class RootActivity extends Activity {
         return buttonList;
     }
 
-    public int getLayoutValue() {
-        return layoutValue;
+    public InputStream getJsonFilePath() {
+        return jsonFilePath;
     }
 
-    public InputStream getFileInput() {
-        return fileInput;
+    public InputStream getJsonFilePathToModify() {
+        return jsonFilePathToModify;
     }
 
-    public InputStream getFileFrasi() {
-        return fileFrasi;
-    }
-
-    public InputStream getFileFrasiJson() {
-        return fileFrasiJson;
-    }
-
-
-    public OutputStream getFileFrasiOut() {
-        return fileFrasiOut;
-    }
 
     public Context getContext() {
         return context;
@@ -119,7 +101,7 @@ public class RootActivity extends Activity {
         else
             audioDefault = configurations.preferences.getString("audio", "basso");
 
-        System.out.println("Audio default "+audioDefault);
+        System.out.println("Audio default " + audioDefault);
 
         if (!configurations.preferences.contains("layout")) {
             String layoutValueString = configurations.setConfigurations("layout", "1");
@@ -127,17 +109,11 @@ public class RootActivity extends Activity {
         } else
             layoutValue = Integer.parseInt(configurations.preferences.getString("layout", "1"));
 
-        System.out.println("layout default "+layoutValue);
+        System.out.println("layout default " + layoutValue);
 
+        jsonFilePath = this.getResources().openRawResource(R.raw.json_tree_raw);
+        jsonFilePathToModify = this.getResources().openRawResource(R.raw.json_tree_raw);
 
-        fileInput = this.getResources().openRawResource(R.raw.tree_structure);
-        fileFrasi = this.getResources().openRawResource(R.raw.frasi);
-        fileFrasiJson =this.getResources().openRawResource(R.raw.frasi);
-        try {
-            fileFrasiOut = new FileOutputStream(this.getResources().getResourcePackageName(R.raw.frasi));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
         buttonList = new ArrayList<>();
         System.out.println("puls " + layoutValue);
         SafeButton newButton;
@@ -196,12 +172,43 @@ public class RootActivity extends Activity {
         topText = (TextView) findViewById(R.id.textView);
         inputSection = (EditText) findViewById(R.id.editText);
 
+        Typeface font = Typeface.createFromAsset(getAssets(), "Raleway-Light.ttf");
+
+        for(SafeButton sb:buttonList) {
+            sb.setTypeface(font);
+        }
+        topText.setTypeface(font);
+        inputSection.setTypeface(font);
+        nextButton.setTypeface(font);
+
         MainController.getInstance().initialize();
 
     }
 
+    public void configureLayout(LeafNode lf) {
+        switch ((String) lf.getAttribute()) {
+            case "2x1":
+                layoutValue = 1;
+                break;
+            case "2x2":
+                layoutValue = 2;
+                break;
+            case "4x2":
+                layoutValue = 3;
+                break;
+            default:
+                layoutValue = 4;
+                break;
+        }
+        configurations.setConfigurations("layout", String.valueOf(layoutValue));
+        this.recreate();
+    }
+
+    //distribuisce gli elementi della lista nei pulsanti in base al layout
     public List<TreeNode> spreadInButtons(List<TreeNode> list, int numButt) {
         List<TreeNode> subList;
+        lastButton.setText("^");
+        nextButton.setText("Avanti");
         if (numButt > 1) {
 
             //se i selectable sono meno della lista
@@ -225,7 +232,7 @@ public class RootActivity extends Activity {
                     i--;
                     j--;
                 }
-
+                nextButton.setText("");
             }
 
         } else {
@@ -234,8 +241,9 @@ public class RootActivity extends Activity {
         }
         if (list.size() > 1 && list.size() > numButt) {
             subList = list.subList(numButt, list.size());
-        } else
+        } else {
             subList = null;
+        }
 
         return subList;
     }

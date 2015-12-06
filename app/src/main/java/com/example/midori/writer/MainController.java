@@ -37,16 +37,16 @@ public class MainController implements SafeTapListener {
 
         int duration;
         switch (durationTouch) {
-            case "disabilita":
+            case "Disabilita":
                 duration = 0;
                 break;
-            case "breve":
+            case "Breve":
                 duration = 1;
                 break;
-            case "medio":
+            case "Medio":
                 duration = 2;
                 break;
-            case "lungo":
+            case "Lungo":
                 duration = 3;
                 break;
             default:
@@ -65,9 +65,8 @@ public class MainController implements SafeTapListener {
         }
         System.out.println("Num puls " + numSelectableButton);
         next.setOnSafeTapListener(this);
-        rootActivity.getTopText().setText((CharSequence) actualParent.data);
+        //  rootActivity.getTopText().setText((CharSequence) actualParent.data);
     }
-
 
 
     //**********************************************************************************************************
@@ -116,7 +115,7 @@ public class MainController implements SafeTapListener {
                 } else {
                     subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
                     actualParent = actualParent.parent;
-                    rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + actualParent.data, ""));
+//                    rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + actualParent.data, ""));
                 }
             }
             //se è un nodo interno all'albero
@@ -125,26 +124,26 @@ public class MainController implements SafeTapListener {
                 node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
                 if (node.isInternal()) {
-//                    if (Objects.equals(node.getTreeNode().data, "frasi")) {
+//                    if (Objects.equals(node.getTreeNode().data, "json_tree_raw")) {
 //                        if (Tree.getInstance().readFilePeriods()) {
 //                            actualParent = node.getTreeNode();
 //                            subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
 //                        }
 //                    } else {
-                        System.out.println("internal " + node.getTreeNode().data);
-                        if (node.getTreeNode().parent == actualParent) {
-                            rootActivity.getTopText().append(" > " + safeButton.getText());
-                        } else {
-                            rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + node.getTreeNode().parent.data, ""));
-                            rootActivity.getTopText().append(" > " + safeButton.getText());
-                        }
+                    System.out.println("internal " + node.getTreeNode().data);
+                    if (node.getTreeNode().parent == actualParent) {
+//                            rootActivity.getTopText().append(" > " + safeButton.getText());
+                    } else {
+//                            rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + node.getTreeNode().parent.data, ""));
+//                            rootActivity.getTopText().append(" > " + safeButton.getText());
+                    }
 
-                        actualParent = node.getTreeNode();
-                        System.out.println("***" + actualParent.data);
-                        for (SafeButton b : rootActivity.getButtonList()) {
-                            b.setText("");
-                        }
-                        subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+                    actualParent = node.getTreeNode();
+                    System.out.println("***" + actualParent.data);
+                    for (SafeButton b : rootActivity.getButtonList()) {
+                        b.setText("");
+                    }
+                    subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
                     //}
 
 
@@ -164,14 +163,18 @@ public class MainController implements SafeTapListener {
     private void doAction(LeafNode lf) {
         switch (lf.getAction()) {
             case LeafNode.ACTION_INSERT_TEXT:
-                rootActivity.getInputSection().setCursorVisible(true);
+
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
                 else {
-                    if (lf.getAttribute().toString().length() == 1)
+                    if (lf.getAttribute().toString().length() == 1) {
                         rootActivity.getInputSection().append((CharSequence) lf.getAttribute());
-                    else
-                        rootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
+                    } else {
+                        if (Objects.equals(lf.getAttribute().toString(), "(spazio)")) {
+                            rootActivity.getInputSection().append(" ");
+                        } else
+                            rootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
+                    }
                 }
                 break;
             case LeafNode.ACTION_SET_TOUCH_DURATION:
@@ -181,29 +184,9 @@ public class MainController implements SafeTapListener {
                 else {
                     int index = lf.getDurationTouchID(lf.getAttribute().toString());
                     SafeButton.setSafeTouchLength(index);
-
-                    rootActivity.getConfigurations().setConfigurations("tocco", (String) lf.getAttribute());
-
                     Log.d("2", (String) lf.getAttribute());
-                    String toShow;
-                    switch ((String) lf.getAttribute()) {
-                        case "disabilita":
-                            toShow = "Tocco 'safe' disabilitato.";
-                            break;
-                        case "breve":
-                            toShow = "Tocco breve impostato.";
-                            break;
-                        case "medio":
-                            toShow = "Tocoo medio impostato.";
-                            break;
-                        case "lungo":
-                            toShow = "Tocco lungo impostato.";
-                            break;
-                        default:
-                            toShow = "Errore nella scelta della durata del tocco.";
-                            break;
-                    }
-                    toast = Toast.makeText(rootActivity.getContext(), toShow, Toast.LENGTH_LONG);
+
+                    toast = Toast.makeText(rootActivity.getContext(), SafeButton.configureTouch(lf), Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
@@ -222,27 +205,7 @@ public class MainController implements SafeTapListener {
                     new Exception("Formato errato").printStackTrace();
                 else {
 
-
-                    switch ((String) lf.getAttribute()) {
-                        case "2x1":
-                            RootActivity.setLayoutValue(1);
-                            break;
-                        case "2x2":
-                            RootActivity.setLayoutValue(2);
-                            break;
-                        case "4x2":
-                            RootActivity.setLayoutValue(3);
-                            break;
-                        default:
-                            RootActivity.setLayoutValue(4);
-                            break;
-                    }
-
-                    rootActivity.getConfigurations().setConfigurations("layout", String.valueOf(rootActivity.getLayoutValue()));
-
-                    rootActivity.recreate();
-                    System.out.println("LAYOUT " + rootActivity.getLayoutValue());
-
+                    rootActivity.configureLayout(lf);
 
                 }
                 break;
@@ -251,14 +214,7 @@ public class MainController implements SafeTapListener {
                     new Exception("Formato errato").printStackTrace();
                 else {
                     switch ((String) lf.getAttribute()) {
-                        case "spazio":
-                            rootActivity.getInputSection().setCursorVisible(true);
-                            if (rootActivity.getInputSection().length() > 0)
-                                rootActivity.getInputSection().append(" ");
-                            else
-                                rootActivity.getInputSection().setText(" ");
-                            break;
-                        case "salva":
+                        case "Salva":
                             if (Tree.getInstance().savePeriod(rootActivity.getInputSection().getText().toString())) {
                                 toast = Toast.makeText(rootActivity.getContext(), "Frase salvata.", Toast.LENGTH_LONG);
                                 toast.show();
@@ -267,11 +223,11 @@ public class MainController implements SafeTapListener {
                                 toast.show();
                             }
                             break;
-                        case "riproduci":
+                        case "Riproduci":
                             toast = Toast.makeText(rootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
                             toast.show();
                             break;
-                        case "cancella":
+                        case "Cancella":
                             if (rootActivity.getInputSection().getText().length() > 0) {
                                 Tree.getInstance().deleteChar(rootActivity.getInputSection().getText());
                             } else {
@@ -279,7 +235,7 @@ public class MainController implements SafeTapListener {
                                 toast.show();
                             }
                             break;
-                        case "cancella tutto":
+                        case "Cancella tutto":
                             node = Tree.getInstance().deletePeriod(rootActivity.getInputSection().getText().toString());
                             if (node != null) {
                                 //rootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
@@ -299,7 +255,8 @@ public class MainController implements SafeTapListener {
                 }
                 break;
             default:
-                //rootActivity.getSelectableButton().setText("eh?");
+                toast = Toast.makeText(rootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);
+                toast.show();
                 break;
         }
     }

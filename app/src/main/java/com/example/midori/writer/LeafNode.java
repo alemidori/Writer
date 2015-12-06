@@ -33,16 +33,16 @@ public class LeafNode extends Node {
     public int getDurationTouchID(String attribute) {
         int toReturn;
         switch (attribute) {
-            case "disabilita":
+            case "Disabilita":
                 toReturn = 0;
                 break;
-            case "breve":
+            case "Breve":
                 toReturn = 1;
                 break;
-            case "medio":
+            case "Medio":
                 toReturn = 2;
                 break;
-            case "lungo":
+            case "Lungo":
                 toReturn = 3;
                 break;
             default:

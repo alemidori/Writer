@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FF252525"
     android:orientation="vertical"
     android:padding="5dp">
     <TextView
@@ -29,7 +30,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc" />
+            android:background="#238283"
+            android:textColor="#ffffff" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button2"
@@ -37,7 +39,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc" />
+            android:background="#238283"
+            android:textColor="#ffffff" />
             />
     </LinearLayout>
 
@@ -51,17 +54,18 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc"
+            android:background="#238283"
+            android:textColor="#ffffff"
             />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:text=">"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#cccccc"
+            android:background="#238283"
+            android:textColor="#ffffff"
             />
     </LinearLayout>
 
