@@ -161,7 +161,7 @@ public class RootActivity extends Activity {
         topText = (TextView) findViewById(R.id.textView);
         inputSection = (EditText) findViewById(R.id.editText);
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "Raleway-Light.ttf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "Abel-Regular.ttf");
 
         for (SafeButton sb : buttonList) {
             sb.setTypeface(font);
@@ -196,6 +196,7 @@ public class RootActivity extends Activity {
     //distribuisce gli elementi della lista nei pulsanti in base al layout
     public List<TreeNode> spreadInButtons(List<TreeNode> list, int numButt) {
         List<TreeNode> subList;
+        lastButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
         if (numButt > 1) {
             //se i selectable sono meno della lista
             if (list.size() >= numButt) {
@@ -225,7 +226,19 @@ public class RootActivity extends Activity {
                     nextButton.setText("");
                     nextButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
                 } else {
-                    lastButton.setText("Torna a " + list.get(0).parent.data);
+                    String nomeMenuPrec = (String) list.get(0).parent.parent.data;
+                    if (Objects.equals(nomeMenuPrec, "root")) {
+                        lastButton.setText("Torna al Menu principale");
+                        nextButton.setText("Avanti");
+                        nextButton.setBackgroundColor(Color.argb(255, 110, 110, 110));
+                        System.out.println("ROOT " + nomeMenuPrec);
+                    } else {
+                        lastButton.setText("Torna a " + nomeMenuPrec);
+                        nextButton.setText("Avanti");
+                        nextButton.setBackgroundColor(Color.argb(255, 110, 110, 110));
+                        System.out.println("INTERNAL BUTTON " + nomeMenuPrec);
+                    }
+                    lastButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
                 }
             }
 

@@ -92,7 +92,11 @@ public class MainController implements SafeTapListener {
                     for (SafeButton b : rootActivity.getButtonList()) {
                         b.setText("");
                     }
-                    rootActivity.getLastButton().setText("Torna a " + actualParent.data);
+                    if (Objects.equals(actualParent.parent.data, "root"))
+                        rootActivity.getLastButton().setText("Torna al Menu principale");
+                    else
+                        rootActivity.getLastButton().setText("Torna a "+actualParent.parent.data);
+                    rootActivity.getLastButton().setBackgroundColor(Color.argb(255, 46, 170, 171));
                 }
             } else {
 
@@ -130,7 +134,6 @@ public class MainController implements SafeTapListener {
                         b.setText("");
                     }
                     subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-
 
 
                 }

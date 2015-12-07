@@ -117,7 +117,7 @@ public class SafeButton extends Button {
             public void run() {
                 if (isPressed) {
                     if (!Objects.equals(actualButton.getText(), ""))
-                        actualButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
+                        actualButton.setBackgroundColor(Color.argb(255, 107, 230, 222));
                     else
                         actualButton.setClickable(false);
                 }
@@ -134,6 +134,8 @@ public class SafeButton extends Button {
             case MotionEvent.ACTION_UP:
                 if (!Objects.equals(actualButton.getText(), "Avanti"))
                     actualButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
+                else
+                    actualButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
                 if (isPressed) {
                     isPressed = false;
                     handler.removeCallbacks(runnable);

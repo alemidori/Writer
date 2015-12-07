@@ -4,21 +4,22 @@
     android:background="#FF252525"
     android:orientation="vertical"
     android:padding="5dp">
+
     <TextView
+        android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:text="Benvenuto!"
-        android:id="@+id/textView"
         android:textColor="#000000"
-        android:textSize="12dp"
-        android:layout_marginBottom="50dp" />
+        android:textSize="12dp" />
 
     <EditText
-        android:cursorVisible="false"
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginBottom="60dp"
+        android:cursorVisible="false" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,20 +29,22 @@
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="#238283"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="10pt" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="#238283"
-            android:textColor="#ffffff" />
-            />
+            android:textColor="#ffffff"
+            android:textSize="10pt" />
+        />
     </LinearLayout>
 
     <LinearLayout
@@ -52,22 +55,22 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="#238283"
             android:textColor="#ffffff"
-            />
+            android:textSize="10pt" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
             android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="#63d4cc"
             android:text="Avanti"
             android:textColor="#ffffff"
-            />
+            android:textSize="10pt" />
     </LinearLayout>
 
 </LinearLayout>
