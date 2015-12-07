@@ -1,19 +1,22 @@
 package com.example.midori.writer;
 
-import android.graphics.Path;
+import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +30,8 @@ public class Tree {
     private static Tree instance;
     private String obj;
     private String jsonString;
-    private JSONObject rootJsonObj, frasiJsonObj;
+    private JsonObject rootJsonObj, frasiJsonObj;
+    private JSONObject rootJsonOBJ, frasiJsonOBJ;
     private JsonReader reader;
     private TreeNode lastParentNode, frasi;
     private List<Node> nodeList = new ArrayList<>();
@@ -44,18 +48,26 @@ public class Tree {
 
     private Tree() {
         rootActivity = RootActivity.getInstanceRootActivity();
-
         gson = new Gson();
-
-        try {
-            FileInputStream fileInputStream = new FileInputStream("../../../../src/main/jsonTree.txt");
-            System.out.println("File aperto");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        String path = rootActivity.getFilesDir().getAbsolutePath() + "/json_tree_internal";
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                br = new BufferedReader(new InputStreamReader(rootActivity.openFileInput("json_tree_internal")));
+                reader = new JsonReader(new InputStreamReader(rootActivity.openFileInput("json_tree_internal")));
+                System.out.println("TROVATO! IN: " + rootActivity.getFilesDir().getAbsolutePath());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            InputStream in= rootActivity.getResources().openRawResource(R.raw.json_tree_raw);
+            InputStream in2 = rootActivity.getResources().openRawResource(R.raw.json_tree_raw);
+            br = new BufferedReader(new InputStreamReader(in));
+            reader = new JsonReader(new InputStreamReader(in2));
         }
-        br = new BufferedReader(new InputStreamReader(rootActivity.getJsonFilePath()));
+
+
         writeJsonString();
-        reader = new JsonReader(new InputStreamReader(rootActivity.getJsonFilePathToModify()));
         parseJSON();
 
     }
@@ -69,17 +81,18 @@ public class Tree {
             while ((jsonLine = br.readLine()) != null) {
                 jsonString += jsonLine + '\n';
             }
-            try {
-                rootJsonObj = new JSONObject(jsonString);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
+            System.out.println(jsonString);
+            FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+            fos.write(jsonString.getBytes());
+            fos.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    //crea le istante dei Treenode a partire dal json
     private void parseJSON() {
 
         boolean flag = false;
@@ -169,24 +182,36 @@ public class Tree {
     }
 
     public boolean savePeriod(String period) {
+
         boolean toReturn;
         if (Objects.equals(period, ""))
             toReturn = false;
         else {
-            System.out.println("ASJNCKEBVIERBVBERVKRE\n" + gson.toJson(rootJsonObj));
 
             try {
-                JSONObject rootObj = rootJsonObj.getJSONObject("root");
-                JSONObject mainObj = rootObj.getJSONObject("Main");
-                frasiJsonObj = mainObj.getJSONObject("Le mie frasi");
+                rootJsonOBJ = new JSONObject(jsonString);
+                JSONObject rootObj = rootJsonOBJ.getJSONObject("root");
+                JSONObject mainObj = rootObj.getJSONObject("Menu");
+                frasiJsonOBJ = mainObj.getJSONObject("Le mie frasi");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                frasiJsonObj.put(period, period);
+                frasiJsonOBJ.put(period, period);
+                JsonParser jsonParser = new JsonParser();
+                rootJsonObj = (JsonObject) jsonParser.parse(rootJsonOBJ.toString());
                 jsonString = gson.toJson(rootJsonObj);
                 System.out.println(jsonString);
-                System.out.println(gson.toJson(frasiJsonObj));
+
+                try {
+                    FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+                    fos.write(jsonString.getBytes());
+                    fos.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

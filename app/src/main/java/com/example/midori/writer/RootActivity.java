@@ -2,6 +2,7 @@ package com.example.midori.writer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,20 +10,20 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
+import java.io.DataOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class RootActivity extends Activity {
     private Configurations configurations;
     private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
-    private InputStream jsonFilePath;
-    private InputStream jsonFilePathToModify;
+
     private Context context;
     private SafeButton lastButton, nextButton;
     private TextView topText;
@@ -48,15 +49,6 @@ public class RootActivity extends Activity {
     public List<SafeButton> getButtonList() {
         return buttonList;
     }
-
-    public InputStream getJsonFilePath() {
-        return jsonFilePath;
-    }
-
-    public InputStream getJsonFilePathToModify() {
-        return jsonFilePathToModify;
-    }
-
 
     public Context getContext() {
         return context;
@@ -110,9 +102,6 @@ public class RootActivity extends Activity {
             layoutValue = Integer.parseInt(configurations.preferences.getString("layout", "1"));
 
         System.out.println("layout default " + layoutValue);
-
-        jsonFilePath = this.getResources().openRawResource(R.raw.json_tree_raw);
-        jsonFilePathToModify = this.getResources().openRawResource(R.raw.json_tree_raw);
 
         buttonList = new ArrayList<>();
         System.out.println("puls " + layoutValue);
@@ -174,7 +163,7 @@ public class RootActivity extends Activity {
 
         Typeface font = Typeface.createFromAsset(getAssets(), "Raleway-Light.ttf");
 
-        for(SafeButton sb:buttonList) {
+        for (SafeButton sb : buttonList) {
             sb.setTypeface(font);
         }
         topText.setTypeface(font);
@@ -207,10 +196,7 @@ public class RootActivity extends Activity {
     //distribuisce gli elementi della lista nei pulsanti in base al layout
     public List<TreeNode> spreadInButtons(List<TreeNode> list, int numButt) {
         List<TreeNode> subList;
-        lastButton.setText("^");
-        nextButton.setText("Avanti");
         if (numButt > 1) {
-
             //se i selectable sono meno della lista
             if (list.size() >= numButt) {
                 int i = 0;
@@ -218,21 +204,29 @@ public class RootActivity extends Activity {
                     buttonList.get(i).setText((CharSequence) list.get(i).data);
                     i++;
                 }
-
+                nextButton.setText("Avanti");
+                nextButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
             } else {
+                //se i selectable sono più della lista
                 for (SafeButton b : buttonList) {
                     b.setText("");
                 }
-                //se i selectable sono più della lista
                 int i = numButt - 2;
                 int j = list.size() - 1;
-                lastButton.setText("^");
+
                 while (i >= 0 && j >= 0) {
                     buttonList.get(i).setText((CharSequence) list.get(j).data);
                     i--;
                     j--;
                 }
-                nextButton.setText("");
+
+                if (Objects.equals(list.get(0).parent.data, "root")) {
+                    lastButton.setText("");
+                    nextButton.setText("");
+                    nextButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
+                } else {
+                    lastButton.setText("Torna a " + list.get(0).parent.data);
+                }
             }
 
         } else {

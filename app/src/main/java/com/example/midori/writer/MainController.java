@@ -1,5 +1,6 @@
 package com.example.midori.writer;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -80,7 +81,7 @@ public class MainController implements SafeTapListener {
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
 
-            if (Objects.equals(rootActivity.getLastButton().getText(), "^")) {
+            if (rootActivity.getLastButton().getText().toString().startsWith("Torna a")) {
 
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
@@ -91,7 +92,7 @@ public class MainController implements SafeTapListener {
                     for (SafeButton b : rootActivity.getButtonList()) {
                         b.setText("");
                     }
-                    rootActivity.getLastButton().setText("^");
+                    rootActivity.getLastButton().setText("Torna a " + actualParent.data);
                 }
             } else {
 
@@ -108,48 +109,34 @@ public class MainController implements SafeTapListener {
         // SELECTABLE BUTTON
         else {
             //se è un nodo di goPrevLevel
-            if (Objects.equals(textButton, "^")) {
+            if ((safeButton.getText()).toString().startsWith("Torna a")) {
 
-                if (Objects.equals(actualParent, rootTreeNode)) {
-                    rootActivity.getTopText().setText("");
-                } else {
-                    subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
-                    actualParent = actualParent.parent;
-//                    rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + actualParent.data, ""));
-                }
+                subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
+                actualParent = actualParent.parent;
+
             }
             //se è un nodo interno all'albero
             else {
+                System.out.print(safeButton.getText());
                 System.out.println(textButton);
                 node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
                 if (node.isInternal()) {
-//                    if (Objects.equals(node.getTreeNode().data, "json_tree_raw")) {
-//                        if (Tree.getInstance().readFilePeriods()) {
-//                            actualParent = node.getTreeNode();
-//                            subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-//                        }
-//                    } else {
-                    System.out.println("internal " + node.getTreeNode().data);
-                    if (node.getTreeNode().parent == actualParent) {
-//                            rootActivity.getTopText().append(" > " + safeButton.getText());
-                    } else {
-//                            rootActivity.getTopText().setText(rootActivity.getTopText().getText().toString().replace(" > " + node.getTreeNode().parent.data, ""));
-//                            rootActivity.getTopText().append(" > " + safeButton.getText());
-                    }
 
+                    System.out.println("internal " + node.getTreeNode().data);
                     actualParent = node.getTreeNode();
                     System.out.println("***" + actualParent.data);
                     for (SafeButton b : rootActivity.getButtonList()) {
                         b.setText("");
                     }
                     subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-                    //}
+
 
 
                 }
                 //se è una foglia
                 else {
+                    System.out.print(safeButton.getText());
                     System.out.println("leaf " + node.getTreeNode().data);
                     doAction((LeafNode) safeButton.getNode());
                 }

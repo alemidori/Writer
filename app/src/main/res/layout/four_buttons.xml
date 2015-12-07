@@ -64,7 +64,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_margin="1dp"
-            android:background="#238283"
+            android:background="#63d4cc"
+            android:text="Avanti"
             android:textColor="#ffffff"
             />
     </LinearLayout>

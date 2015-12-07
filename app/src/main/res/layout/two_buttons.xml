@@ -20,7 +20,7 @@
         android:id="@+id/editText"
         android:layout_marginBottom="60dp"
         android:elegantTextHeight="false"
-        android:fontFamily="@android:string/defaultMsisdnAlphaTag" />
+    />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,10 +42,11 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:textSize="10pt"
             android:layout_margin="1dp"
-            android:textColor="#4dcca7"
+            android:textColor="#ffffff"
             android:text="Avanti"
-            android:background="#238283"
+            android:background="#63d4cc"
             />
     </LinearLayout>
 
