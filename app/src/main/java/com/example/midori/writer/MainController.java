@@ -1,21 +1,25 @@
 package com.example.midori.writer;
 
 import android.graphics.Color;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
  * Created by Alessandra on 22/10/15.
  */
 public class MainController implements SafeTapListener {
+    private TextToSpeech tts;
+    private TextView textView;
     private static MainController instance;
     private RootActivity rootActivity;
     private SafeButton next;
     private List<TreeNode> subList;
-    private Node node;
     private TreeNode actualParent, rootTreeNode;
     private int numSelectableButton;
 
@@ -35,6 +39,19 @@ public class MainController implements SafeTapListener {
         rootActivity = RootActivity.getInstanceRootActivity();
         String durationTouch = rootActivity.getTocco();
         System.out.println("durationTouch " + durationTouch);
+
+        tts = new TextToSpeech(rootActivity.getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = tts.setLanguage(Locale.ITALIAN);
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        System.out.println("Lingua non supportata!");
+                    }
+                } else
+                    System.out.println("Errore durante la riproduzione");
+            }
+        });
 
         int duration;
         switch (durationTouch) {
@@ -66,7 +83,7 @@ public class MainController implements SafeTapListener {
         }
         System.out.println("Num puls " + numSelectableButton);
         next.setOnSafeTapListener(this);
-        //  rootActivity.getTopText().setText((CharSequence) actualParent.data);
+
     }
 
 
@@ -95,8 +112,8 @@ public class MainController implements SafeTapListener {
                     if (Objects.equals(actualParent.parent.data, "root"))
                         rootActivity.getLastButton().setText("Torna al Menu principale");
                     else
-                        rootActivity.getLastButton().setText("Torna a "+actualParent.parent.data);
-                    rootActivity.getLastButton().setBackgroundColor(Color.argb(255, 46, 170, 171));
+                        rootActivity.getLastButton().setText("Torna a " + actualParent.parent.data);
+                    rootActivity.getLastButton().setBackgroundColor(Color.argb(255, 73, 73, 73));
                 }
             } else {
 
@@ -117,19 +134,25 @@ public class MainController implements SafeTapListener {
 
                 subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
                 actualParent = actualParent.parent;
+                if (Objects.equals(actualParent.data, "root"))
+                    rootActivity.getTextView().setText("Menu principale");
+                else
+                    rootActivity.getTextView().setText((CharSequence) actualParent.data);
+
 
             }
             //se è un nodo interno all'albero
             else {
                 System.out.print(safeButton.getText());
                 System.out.println(textButton);
-                node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
+                Node node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
                 if (node.isInternal()) {
 
                     System.out.println("internal " + node.getTreeNode().data);
                     actualParent = node.getTreeNode();
                     System.out.println("***" + actualParent.data);
+                    rootActivity.getTextView().setText((CharSequence) actualParent.data);
                     for (SafeButton b : rootActivity.getButtonList()) {
                         b.setText("");
                     }
@@ -162,8 +185,10 @@ public class MainController implements SafeTapListener {
                     } else {
                         if (Objects.equals(lf.getAttribute().toString(), "(spazio)")) {
                             rootActivity.getInputSection().append(" ");
-                        } else
-                            rootActivity.getInputSection().setText((CharSequence) lf.getAttribute());
+                        } else {
+                            rootActivity.getInputSection().append((CharSequence) lf.getAttribute());
+                            rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
+                        }
                     }
                 }
                 break;
@@ -209,28 +234,44 @@ public class MainController implements SafeTapListener {
                                 toast = Toast.makeText(rootActivity.getContext(), "Frase salvata.", Toast.LENGTH_LONG);
                                 toast.show();
                             } else {
-                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata!", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
                         case "Riproduci":
-                            toast = Toast.makeText(rootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
-                            toast.show();
-                            break;
-                        case "Cancella":
                             if (rootActivity.getInputSection().getText().length() > 0) {
-                                Tree.getInstance().deleteChar(rootActivity.getInputSection().getText());
+                                tts.speak(rootActivity.getInputSection().getText(), TextToSpeech.QUEUE_FLUSH, null, "play");
+                                toast = Toast.makeText(rootActivity.getContext(), "In riproduzione...", Toast.LENGTH_LONG);
+                                toast.show();
                             } else {
                                 toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
                             break;
+                        case "Cancella":
+                            if (rootActivity.getInputSection().getText().length() > 0)
+                                Tree.getInstance().deleteChar(rootActivity.getInputSection().getText().toString());
+
+                            break;
                         case "Cancella tutto":
-                            node = Tree.getInstance().deletePeriod(rootActivity.getInputSection().getText().toString());
-                            if (node != null) {
-                                //rootActivity.getSelectableButton().setText((CharSequence) node.getTreeNode().data);
-                                toast = Toast.makeText(rootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
+                            if (rootActivity.getInputSection().getText().length() > 0) {
+                                rootActivity.getInputSection().setText("");
+                            } else {
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
+                            }
+                            break;
+                        case "Elimina frase":
+
+                            if (rootActivity.getInputSection().getText().length() > 0) {
+                                boolean deleted = Tree.getInstance().deletePeriod(rootActivity.getInputSection().getText().toString());
+                                if (deleted) {
+                                    toast = Toast.makeText(rootActivity.getContext(), "Frase eliminata.", Toast.LENGTH_LONG);
+                                    toast.show();
+                                } else {
+                                    toast = Toast.makeText(rootActivity.getContext(), "La frase selezionata non è presente nella tua lista frasi.", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
                             } else {
                                 toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
@@ -250,5 +291,6 @@ public class MainController implements SafeTapListener {
                 break;
         }
     }
+
 
 }

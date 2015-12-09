@@ -5,13 +5,13 @@
         android:name="android.permission.WRITE_SETTINGS" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/logo"
+        android:label="Phraser"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".RootActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:label="@string/app_name" >
+            android:label="Phraser" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

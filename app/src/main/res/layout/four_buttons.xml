@@ -1,25 +1,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF252525"
+    android:background="@drawable/gradient_background"
     android:orientation="vertical"
     android:padding="5dp">
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="20pt"
+        android:padding="0dp"
+        android:src="@drawable/logo_e_nome"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="20dp"/>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#ffffff"
+        android:layout_marginBottom="5dp"/>
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="Benvenuto!"
-        android:textColor="#000000"
-        android:textSize="12dp" />
+        android:text="Menu principale"
+        android:id="@+id/textView"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:layout_marginBottom="20dp" />
 
     <EditText
         android:id="@+id/editText"
+        android:backgroundTint="#a3d1a5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:cursorVisible="false" />
+        android:layout_marginBottom="20dp"
+        android:cursorVisible="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +45,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#238283"
+            android:background="#252525"
             android:textColor="#ffffff"
             android:textSize="10pt" />
 
@@ -41,10 +55,9 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#238283"
+            android:background="#252525"
             android:textColor="#ffffff"
             android:textSize="10pt" />
-        />
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +70,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#238283"
+            android:background="#252525"
             android:textColor="#ffffff"
             android:textSize="10pt" />
 
@@ -67,7 +80,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#63d4cc"
+            android:background="#252525"
             android:text="Avanti"
             android:textColor="#ffffff"
             android:textSize="10pt" />

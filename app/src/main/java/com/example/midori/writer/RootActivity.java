@@ -10,10 +10,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,12 +19,16 @@ public class RootActivity extends Activity {
     private Configurations configurations;
     private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
-
     private Context context;
+    private TextView textView;
     private SafeButton lastButton, nextButton;
-    private TextView topText;
     private static int layoutValue;
     private List<SafeButton> buttonList;
+
+
+    public TextView getTextView() {
+        return textView;
+    }
 
     public Configurations getConfigurations() {
         return configurations;
@@ -64,9 +64,6 @@ public class RootActivity extends Activity {
         return nextButton;
     }
 
-    public TextView getTopText() {
-        return topText;
-    }
 
     public static RootActivity getInstanceRootActivity() {
         return rootActivity;
@@ -153,12 +150,10 @@ public class RootActivity extends Activity {
 
                 break;
         }
-
         String buttonID = "button" + (buttonList.size());
         int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
         lastButton = (SafeButton) findViewById(resID);
 
-        topText = (TextView) findViewById(R.id.textView);
         inputSection = (EditText) findViewById(R.id.editText);
 
         Typeface font = Typeface.createFromAsset(getAssets(), "Abel-Regular.ttf");
@@ -166,9 +161,11 @@ public class RootActivity extends Activity {
         for (SafeButton sb : buttonList) {
             sb.setTypeface(font);
         }
-        topText.setTypeface(font);
+        textView = (TextView) findViewById(R.id.textView);
+
         inputSection.setTypeface(font);
         nextButton.setTypeface(font);
+        textView.setTypeface(font);
 
         MainController.getInstance().initialize();
 
@@ -196,7 +193,7 @@ public class RootActivity extends Activity {
     //distribuisce gli elementi della lista nei pulsanti in base al layout
     public List<TreeNode> spreadInButtons(List<TreeNode> list, int numButt) {
         List<TreeNode> subList;
-        lastButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
+        lastButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
         if (numButt > 1) {
             //se i selectable sono meno della lista
             if (list.size() >= numButt) {
@@ -206,7 +203,7 @@ public class RootActivity extends Activity {
                     i++;
                 }
                 nextButton.setText("Avanti");
-                nextButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
+                nextButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
             } else {
                 //se i selectable sono più della lista
                 for (SafeButton b : buttonList) {
@@ -224,21 +221,24 @@ public class RootActivity extends Activity {
                 if (Objects.equals(list.get(0).parent.data, "root")) {
                     lastButton.setText("");
                     nextButton.setText("");
-                    nextButton.setBackgroundColor(Color.argb(255, 35, 130, 131));
+                    nextButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
                 } else {
                     String nomeMenuPrec = (String) list.get(0).parent.parent.data;
                     if (Objects.equals(nomeMenuPrec, "root")) {
                         lastButton.setText("Torna al Menu principale");
                         nextButton.setText("Avanti");
-                        nextButton.setBackgroundColor(Color.argb(255, 110, 110, 110));
-                        System.out.println("ROOT " + nomeMenuPrec);
-                    } else {
+
+                    } else
                         lastButton.setText("Torna a " + nomeMenuPrec);
-                        nextButton.setText("Avanti");
-                        nextButton.setBackgroundColor(Color.argb(255, 110, 110, 110));
-                        System.out.println("INTERNAL BUTTON " + nomeMenuPrec);
+
+                    System.out.println("PRIMO ELEMENTO LISTA " + list.get(0).data);
+                    if (list.get(0).parent.children.size() < numButt) {
+                        nextButton.setText("");
+                        nextButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
                     }
-                    lastButton.setBackgroundColor(Color.argb(255, 46, 170, 171));
+                    else
+                        nextButton.setText("Avanti");
+                    lastButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
                 }
             }
 

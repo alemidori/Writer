@@ -30,14 +30,15 @@ public class Tree {
     private static Tree instance;
     private String obj;
     private String jsonString;
-    private JsonObject rootJsonObj, frasiJsonObj;
+    private JsonObject rootJsonObj;
     private JSONObject rootJsonOBJ, frasiJsonOBJ;
     private JsonReader reader;
-    private TreeNode lastParentNode, frasi;
+    private TreeNode lastParentNode;
     private List<Node> nodeList = new ArrayList<>();
     private RootActivity rootActivity;
     private BufferedReader br;
     private Gson gson;
+    private JsonParser jsonParser;
 
     public static Tree getInstance() {
         if (instance == null)
@@ -49,6 +50,7 @@ public class Tree {
     private Tree() {
         rootActivity = RootActivity.getInstanceRootActivity();
         gson = new Gson();
+        jsonParser = new JsonParser();
         String path = rootActivity.getFilesDir().getAbsolutePath() + "/json_tree_internal";
         File file = new File(path);
         if (file.exists()) {
@@ -60,7 +62,7 @@ public class Tree {
                 e.printStackTrace();
             }
         } else {
-            InputStream in= rootActivity.getResources().openRawResource(R.raw.json_tree_raw);
+            InputStream in = rootActivity.getResources().openRawResource(R.raw.json_tree_raw);
             InputStream in2 = rootActivity.getResources().openRawResource(R.raw.json_tree_raw);
             br = new BufferedReader(new InputStreamReader(in));
             reader = new JsonReader(new InputStreamReader(in2));
@@ -198,7 +200,6 @@ public class Tree {
             }
             try {
                 frasiJsonOBJ.put(period, period);
-                JsonParser jsonParser = new JsonParser();
                 rootJsonObj = (JsonObject) jsonParser.parse(rootJsonOBJ.toString());
                 jsonString = gson.toJson(rootJsonObj);
                 System.out.println(jsonString);
@@ -217,7 +218,7 @@ public class Tree {
                 e.printStackTrace();
             }
 
-            frasi = getNodeFromText("Le mie frasi").getTreeNode();
+            TreeNode frasi = getNodeFromText("Le mie frasi").getTreeNode();
             TreeNode newPeriod = frasi.addChild(period);
             nodeList.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
             toReturn = true;
@@ -226,27 +227,63 @@ public class Tree {
     }
 
 
-    public void deleteChar(CharSequence cs) {
+    public void deleteChar(String cs) {
+
         CharSequence withoutLast = cs.subSequence(0, rootActivity.getInputSection().getText().length() - 1);
         rootActivity.getInputSection().setText(withoutLast);
+        rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
     }
 
-    public Node deletePeriod(String period) {
-        Node nextPeriod = null;
+
+    public boolean deletePeriod(String period) {
         Node n;
+        int position = 0;
+        boolean isIn = false;
         for (Iterator<Node> iterator = nodeList.iterator(); iterator.hasNext(); ) {
             n = iterator.next();
             if (n.getTreeNode().data.equals(period)) {
-                if (nodeList.indexOf(n) < nodeList.size() - 1)
-                    nextPeriod = nodeList.get(nodeList.indexOf(n) + 1);
-                else nextPeriod = nodeList.get(0);
+                List<TreeNode> list = n.getTreeNode().parent.children;
+                for (TreeNode tnode : list) {
+                    if (Objects.equals(tnode.data, period))
+                        position = list.indexOf(tnode);
+                    System.out.println(tnode.data);
+                }
+                list.remove(position);
+                n.getTreeNode().parent.children.remove(n);
                 iterator.remove();
+
+                try {
+                    rootJsonOBJ = new JSONObject(jsonString);
+                    JSONObject rootObj = rootJsonOBJ.getJSONObject("root");
+                    JSONObject mainObj = rootObj.getJSONObject("Menu");
+                    frasiJsonOBJ = mainObj.getJSONObject("Le mie frasi");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                frasiJsonOBJ.remove(period);
+                rootJsonObj = (JsonObject) jsonParser.parse(rootJsonOBJ.toString());
+                jsonString = gson.toJson(rootJsonObj);
+
+                try {
+                    FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+                    fos.write(jsonString.getBytes());
+                    fos.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                rootActivity.getInputSection().setText("");
+                System.out.println(jsonString);
+                isIn = true;
             }
         }
-        if (nextPeriod != null) {
+        if (isIn)
             rootActivity.getInputSection().setText("");
-            return nextPeriod;
-        } else return null;
+        for (Node node : nodeList) {
+            System.out.println("NOMI NODI " + node.getTreeNode().data);
+        }
 
+        return isIn;
     }
 }
