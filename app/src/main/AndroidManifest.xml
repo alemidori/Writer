@@ -5,13 +5,14 @@
         android:name="android.permission.WRITE_SETTINGS" />
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/logo_orange"
         android:label="Phraser"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".RootActivity"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:label="Phraser" >
+            android:label="Phraser"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

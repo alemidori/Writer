@@ -129,24 +129,15 @@ public class MainController implements SafeTapListener {
 
         // SELECTABLE BUTTON
         else {
-            //se è un nodo di goPrevLevel
-            if ((safeButton.getText()).toString().startsWith("Torna a")) {
 
-                subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
-                actualParent = actualParent.parent;
-                if (Objects.equals(actualParent.data, "root"))
-                    rootActivity.getTextView().setText("Menu principale");
-                else
-                    rootActivity.getTextView().setText((CharSequence) actualParent.data);
+            //se il nodo è presente nell'albero
+            if(Tree.getInstance().isNodeInList((String) safeButton.getText())){
 
-
-            }
-            //se è un nodo interno all'albero
-            else {
                 System.out.print(safeButton.getText());
                 System.out.println(textButton);
                 Node node = Tree.getInstance().getNodeFromText((String) safeButton.getText());
 
+                //se è un nodo interno all'albero
                 if (node.isInternal()) {
 
                     System.out.println("internal " + node.getTreeNode().data);
@@ -158,7 +149,6 @@ public class MainController implements SafeTapListener {
                     }
                     subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
 
-
                 }
                 //se è una foglia
                 else {
@@ -167,11 +157,22 @@ public class MainController implements SafeTapListener {
                     doAction((LeafNode) safeButton.getNode());
                 }
             }
+
+            //se è un nodo di goPrevLevel
+            else if ((safeButton.getText()).toString().startsWith("Torna a")) {
+
+                subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
+                actualParent = actualParent.parent;
+                if (Objects.equals(actualParent.data, "root"))
+                    rootActivity.getTextView().setText("Menu principale");
+                else
+                    rootActivity.getTextView().setText((CharSequence) actualParent.data);
+            }
         }
+
 
         return false;
     }
-
 
     private void doAction(LeafNode lf) {
         switch (lf.getAction()) {
@@ -276,6 +277,14 @@ public class MainController implements SafeTapListener {
                                 toast = Toast.makeText(rootActivity.getContext(), "Nessuna frase selezionata.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
+                            break;
+                        case "Inserisci indirizzo":
+                            rootActivity.getInputSection().setText("Inserisci indirizzo e-mail");
+                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Alfabeto e simboli").getTreeNode().children,numSelectableButton);
+
+                            break;
+                        case "Inserisci numero":
+                            //TODO
                             break;
                         default:
                             toast = Toast.makeText(rootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);

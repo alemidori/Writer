@@ -133,7 +133,7 @@ public class Tree {
                     TreeNode childNode = lastParentNode.addChild(obj);
                     System.out.println(lastParentNode.data + " genera > " + childNode.data);
                     switch ((String) lastParentNode.data) {
-                        case "Alfabeto":
+                        case "Alfabeto e caratteri":
                             action = LeafNode.ACTION_INSERT_TEXT;
                             break;
                         case "Le mie frasi":
@@ -171,6 +171,16 @@ public class Tree {
             e.printStackTrace();
         }
 
+    }
+
+    public boolean isNodeInList(String s) {
+        boolean toReturn = false;
+        for (Node n : nodeList) {
+            if(Objects.equals(n.getTreeNode().data, s)){
+                toReturn = true;
+            }
+        }
+        return toReturn;
     }
 
     public Node getNodeFromText(String s) {

@@ -1,7 +1,7 @@
 {
   "root": {
     "Menu": {
-      "Alfabeto": {
+      "Alfabeto e simboli": {
         "(spazio)":" ",
         "a": "A",
         "b": "B",
@@ -23,8 +23,38 @@
         "t":"T",
         "u":"U",
         "v":"V",
-        "z":"Z"
+        "z":"Z",
+        "à":"à",
+        "è":"è",
+        "é":"é",
+        "ì":"ì",
+        "ò":"ò",
+        "ù":"ù",
+        ".":".",
+        ",":",",
+        "(":"(",
+        ")":")",
+        "@":"@",
+        "!":"!",
+        "?":"?",
+        "'":"'",
+        "-":"-",
+        ":":":",
+        "_":"_",
+        "%":"&"
       },
+      "Numeri":{
+        "0":"0",
+        "1":"1",
+        "2":"2",
+        "3":"3",
+        "4":"4",
+        "5":"5",
+        "6":"6",
+        "7":"7",
+        "8":"8",
+        "9":"9"
+        },
       "Le mie frasi": {
         "Ciao!":"ciao",
         "Buongiorno!":"buongiorno",
@@ -36,8 +66,14 @@
         "Cancella": "cancella",
         "Cancella tutto": "cancella tutto",
         "Elimina frase": "elimina frase",
-        "Invia come e-mail": "invia come e-mail",
-        "Invia come sms": "invia come sms"
+        "Invia come e-mail": {
+          "Inserisci Indirizzo":"inserisci indirizzo",
+          "Invia":"invia"
+        },
+        "Invia come sms": {
+          "Inserisci numero":"inserisci numero",
+          "Invia":"invia"
+        }
       }
     },
     "Configura": {

@@ -40,7 +40,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75pt">
+        android:layout_height="100pt">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button1"
@@ -65,7 +65,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150pt">
+        android:layout_height="100pt">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button3"

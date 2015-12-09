@@ -2,13 +2,18 @@ package com.example.midori.writer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,10 +171,17 @@ public class RootActivity extends Activity {
         inputSection.setTypeface(font);
         nextButton.setTypeface(font);
         textView.setTypeface(font);
+        inputSection.setOnTouchListener(otl);
 
         MainController.getInstance().initialize();
 
     }
+
+    private View.OnTouchListener otl = new View.OnTouchListener() {
+        public boolean onTouch(View v, MotionEvent event) {
+            return true; // the listener has consumed the event
+        }
+    };
 
     public void configureLayout(LeafNode lf) {
         switch ((String) lf.getAttribute()) {
@@ -228,15 +240,18 @@ public class RootActivity extends Activity {
                         lastButton.setText("Torna al Menu principale");
                         nextButton.setText("Avanti");
 
-                    } else
-                        lastButton.setText("Torna a " + nomeMenuPrec);
+                    } else {
+                        if (Objects.equals(textView.getText(), "Inserisci indirizzo e-mail"))
+                            lastButton.setText("");
+                        else
+                            lastButton.setText("Torna a " + nomeMenuPrec);
+                    }
 
                     System.out.println("PRIMO ELEMENTO LISTA " + list.get(0).data);
                     if (list.get(0).parent.children.size() < numButt) {
                         nextButton.setText("");
                         nextButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
-                    }
-                    else
+                    } else
                         nextButton.setText("Avanti");
                     lastButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
                 }
@@ -254,6 +269,7 @@ public class RootActivity extends Activity {
 
         return subList;
     }
+
 
 
     @Override
