@@ -67,12 +67,12 @@
         "Cancella tutto": "cancella tutto",
         "Elimina frase": "elimina frase",
         "Invia come e-mail": {
-          "Inserisci Indirizzo":"inserisci indirizzo",
-          "Invia":"invia"
+          "Inserisci indirizzo":"inserisci indirizzo",
+          "Invia e-mail":"invia e-mail"
         },
         "Invia come sms": {
           "Inserisci numero":"inserisci numero",
-          "Invia":"invia"
+          "Invia sms":"invia sms"
         }
       }
     },

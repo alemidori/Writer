@@ -1,7 +1,10 @@
 package com.example.midori.writer;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.speech.tts.TextToSpeech;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ public class MainController implements SafeTapListener {
     private TextView textView;
     private static MainController instance;
     private RootActivity rootActivity;
+    private String smsMsg;
     private SafeButton next;
     private List<TreeNode> subList;
     private TreeNode actualParent, rootTreeNode;
@@ -36,6 +40,7 @@ public class MainController implements SafeTapListener {
     }
 
     public void initialize() {
+        smsMsg = null;
         rootActivity = RootActivity.getInstanceRootActivity();
         String durationTouch = rootActivity.getTocco();
         System.out.println("durationTouch " + durationTouch);
@@ -102,6 +107,9 @@ public class MainController implements SafeTapListener {
 
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+            } else if (rootActivity.getLastButton().getText().toString().startsWith("Vai a Invia sms")) {
+                actualParent = Tree.getInstance().getNodeFromText("Numeri").getTreeNode();
+                subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
             } else if (subList == null) {
                 if (actualParent == rootTreeNode) {
                     subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
@@ -131,7 +139,7 @@ public class MainController implements SafeTapListener {
         else {
 
             //se il nodo è presente nell'albero
-            if(Tree.getInstance().isNodeInList((String) safeButton.getText())){
+            if (Tree.getInstance().isNodeInList((String) safeButton.getText())) {
 
                 System.out.print(safeButton.getText());
                 System.out.println(textButton);
@@ -167,6 +175,17 @@ public class MainController implements SafeTapListener {
                     rootActivity.getTextView().setText("Menu principale");
                 else
                     rootActivity.getTextView().setText((CharSequence) actualParent.data);
+            } else if (Objects.equals(safeButton.getText(), "Vai a Invia e-mail")) {
+                actualParent = Tree.getInstance().getNodeFromText("Invia come e-mail").getTreeNode();
+                rootActivity.getTextView().setText((CharSequence) actualParent.data);
+                subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+
+            } else if (Objects.equals(safeButton.getText(), "Vai a Invia sms")) {
+                actualParent = Tree.getInstance().getNodeFromText("Invia come sms").getTreeNode();
+                rootActivity.getTextView().setText((CharSequence) actualParent.data);
+                subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
+            } else {
+                safeButton.setClickable(false);
             }
         }
 
@@ -175,6 +194,7 @@ public class MainController implements SafeTapListener {
     }
 
     private void doAction(LeafNode lf) {
+
         switch (lf.getAction()) {
             case LeafNode.ACTION_INSERT_TEXT:
 
@@ -187,7 +207,7 @@ public class MainController implements SafeTapListener {
                         if (Objects.equals(lf.getAttribute().toString(), "(spazio)")) {
                             rootActivity.getInputSection().append(" ");
                         } else {
-                            rootActivity.getInputSection().append((CharSequence) lf.getAttribute());
+                            rootActivity.getInputSection().append((" " + lf.getAttribute()));
                             rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
                         }
                     }
@@ -229,6 +249,7 @@ public class MainController implements SafeTapListener {
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
                 else {
+
                     switch ((String) lf.getAttribute()) {
                         case "Salva":
                             if (Tree.getInstance().savePeriod(rootActivity.getInputSection().getText().toString())) {
@@ -279,12 +300,45 @@ public class MainController implements SafeTapListener {
                             }
                             break;
                         case "Inserisci indirizzo":
-                            rootActivity.getInputSection().setText("Inserisci indirizzo e-mail");
-                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Alfabeto e simboli").getTreeNode().children,numSelectableButton);
-
+                            CharSequence emailMsg = rootActivity.getInputSection().getText();
+                            rootActivity.getTextView().setText("Inserisci indirizzo e-mail");
+                            rootActivity.getInputSection().setText("");
+                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Alfabeto e simboli").getTreeNode().children, numSelectableButton);
                             break;
                         case "Inserisci numero":
+                            smsMsg = rootActivity.getInputSection().getText().toString();
+                            rootActivity.getTextView().setText("Inserisci numero di telefono");
+                            rootActivity.getInputSection().setText("");
+                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Numeri").getTreeNode().children, numSelectableButton);
+                            break;
+                        case "Invia e-mail":
                             //TODO
+                            break;
+                        case "Invia sms":
+                            String phoneNumber = rootActivity.getInputSection().getText().toString();
+                            if (phoneNumber.matches("-?\\d+(\\.\\d+)?")) {
+                                if (Objects.equals((phoneNumber), "")) {
+                                    toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
+                                    toast.show();
+                                } else if (phoneNumber.length() < 10) {
+                                    toast = Toast.makeText(rootActivity.getContext(), "Numero non valido.", Toast.LENGTH_LONG);
+                                    toast.show();
+                                } else {
+                                    if (Objects.equals(smsMsg, "")) {
+                                        toast = Toast.makeText(rootActivity.getContext(), "Messaggio vuoto.", Toast.LENGTH_LONG);
+                                        toast.show();
+                                    } else {
+                                        SmsManager sms = SmsManager.getDefault();
+                                        sms.sendTextMessage(phoneNumber, null, smsMsg, null, null);
+                                        toast = Toast.makeText(rootActivity.getContext(), "Messaggio inviato.", Toast.LENGTH_LONG);
+                                        toast.show();
+                                    }
+                                }
+                            } else {
+                                toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+
                             break;
                         default:
                             toast = Toast.makeText(rootActivity.getContext(), "Comando sconosciuto.", Toast.LENGTH_LONG);

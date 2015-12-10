@@ -4,105 +4,111 @@
     android:background="@drawable/gradient_background"
     android:orientation="vertical"
     android:padding="5dp">
-
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="20pt"
-        android:padding="0dp"
+        android:layout_height="50dp"
         android:src="@drawable/logo_e_nome_orange"
         android:layout_marginBottom="6dp"
         android:layout_marginTop="20dp"/>
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#ffffff"
-        android:layout_marginBottom="5dp"/>
+        android:background="#ffffff" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Menu principale"
+        android:layout_weight="1"
         android:id="@+id/textView"
-        android:layout_marginTop="50pt"
+        android:layout_marginTop="20dp"
         android:textColor="#ffffff"
-        android:textSize="15pt"
-        android:layout_marginBottom="20dp" />
+        android:textSize="25sp"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:maxHeight="@dimen/activity_horizontal_margin"
-        android:layout_height="22pt"
-        android:layout_marginBottom="50pt"
+        android:textSize="22sp"
         android:backgroundTint="#e8a172"
         android:textColor="#000"
-        android:textSize="12pt"
+        android:layout_width="match_parent"
+        android:maxHeight="@dimen/activity_horizontal_margin"
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
         android:cursorVisible="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75pt">
+        android:layout_height="0dp"
+        android:layout_weight="5">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75pt">
+        android:layout_height="0dp"
+        android:layout_weight="5">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75pt">
+        android:layout_height="0dp"
+        android:layout_weight="5">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button5"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button6"
@@ -110,14 +116,16 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
+            android:padding="2dp"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75pt">
+        android:layout_height="0dp"
+        android:layout_weight="5">
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/button7"
@@ -125,19 +133,21 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
+            android:padding="2dp"
             android:background="#252525"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
 
         <com.example.midori.writer.SafeButton
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
+            android:padding="2dp"
             android:layout_weight="1"
             android:background="#252525"
             android:text="Avanti"
             android:textColor="#ffffff"
-            android:textSize="14pt" />
+            android:textSize="25sp" />
     </LinearLayout>
 </LinearLayout>

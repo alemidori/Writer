@@ -241,8 +241,14 @@ public class RootActivity extends Activity {
                         nextButton.setText("Avanti");
 
                     } else {
-                        if (Objects.equals(textView.getText(), "Inserisci indirizzo e-mail"))
-                            lastButton.setText("");
+                        if (Objects.equals(textView.getText(), "Inserisci indirizzo e-mail")){
+                            lastButton.setText("Vai a Invia e-mail");
+                            nextButton.setText("Avanti");
+                        }
+                        else if(Objects.equals(textView.getText(), "Inserisci numero di telefono")){
+                            lastButton.setText("Vai a Invia sms");
+                            nextButton.setText("Avanti");
+                        }
                         else
                             lastButton.setText("Torna a " + nomeMenuPrec);
                     }

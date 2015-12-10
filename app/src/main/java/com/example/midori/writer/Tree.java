@@ -142,6 +142,18 @@ public class Tree {
                         case "Azioni":
                             action = LeafNode.COMMANDS;
                             break;
+                        case "Invia come e-mail":
+                            action = LeafNode.COMMANDS;
+                            break;
+                        case "Invia e-mail":
+                            action = LeafNode.COMMANDS;
+                            break;
+                        case "Invia sms":
+                            action = LeafNode.COMMANDS;
+                            break;
+                        case "Invia come sms":
+                            action = LeafNode.COMMANDS;
+                            break;
                         case "Tocco":
                             action = LeafNode.ACTION_SET_TOUCH_DURATION;
                             break;
