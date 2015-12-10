@@ -118,8 +118,6 @@ public class SafeButton extends Button {
                 if (isPressed) {
                     if (!Objects.equals(actualButton.getText(), ""))
                         actualButton.setBackgroundColor(Color.argb(255, 93, 93, 93));
-                    else
-                        actualButton.setClickable(false);
                 }
 
             }

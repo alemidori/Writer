@@ -40,7 +40,7 @@ public class MainController implements SafeTapListener {
     }
 
     public void initialize() {
-        smsMsg = null;
+        smsMsg =null;
         rootActivity = RootActivity.getInstanceRootActivity();
         String durationTouch = rootActivity.getTocco();
         System.out.println("durationTouch " + durationTouch);
@@ -98,13 +98,13 @@ public class MainController implements SafeTapListener {
     public boolean onSafeTap(SafeButton safeButton) {
 
         String textButton = (String) safeButton.getText();
-        System.out.println(textButton);
+        System.out.println("TESTO PULSANTE "+textButton);
 
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
 
             if (rootActivity.getLastButton().getText().toString().startsWith("Torna a")) {
-
+                System.out.println("TESTO PULSANTE "+textButton);
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
             } else if (rootActivity.getLastButton().getText().toString().startsWith("Vai a Invia sms")) {
@@ -124,7 +124,7 @@ public class MainController implements SafeTapListener {
                     rootActivity.getLastButton().setBackgroundColor(Color.argb(255, 73, 73, 73));
                 }
             } else {
-
+                System.out.println("TESTO PULSANTE "+textButton);
                 for (SafeButton b : rootActivity.getButtonList()) {
                     b.setText("");
                 }
@@ -160,6 +160,7 @@ public class MainController implements SafeTapListener {
                 }
                 //se è una foglia
                 else {
+
                     System.out.print(safeButton.getText());
                     System.out.println("leaf " + node.getTreeNode().data);
                     doAction((LeafNode) safeButton.getNode());
@@ -184,8 +185,6 @@ public class MainController implements SafeTapListener {
                 actualParent = Tree.getInstance().getNodeFromText("Invia come sms").getTreeNode();
                 rootActivity.getTextView().setText((CharSequence) actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
-            } else {
-                safeButton.setClickable(false);
             }
         }
 
@@ -240,9 +239,7 @@ public class MainController implements SafeTapListener {
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
                 else {
-
                     rootActivity.configureLayout(lf);
-
                 }
                 break;
             case LeafNode.COMMANDS:
@@ -271,8 +268,11 @@ public class MainController implements SafeTapListener {
                             }
                             break;
                         case "Cancella":
-                            if (rootActivity.getInputSection().getText().length() > 0)
-                                Tree.getInstance().deleteChar(rootActivity.getInputSection().getText().toString());
+                            if (rootActivity.getInputSection().getText().length() > 0){
+                                    String withoutLast = rootActivity.getInputSection().getText().toString().substring(0, rootActivity.getInputSection().getText().toString().length() - 1);
+                                    rootActivity.getInputSection().setText(withoutLast);
+                                    rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
+                            }
 
                             break;
                         case "Cancella tutto":
@@ -316,7 +316,7 @@ public class MainController implements SafeTapListener {
                             break;
                         case "Invia sms":
                             String phoneNumber = rootActivity.getInputSection().getText().toString();
-                            if (phoneNumber.matches("-?\\d+(\\.\\d+)?")) {
+                            if(phoneNumber.matches("-?\\d+(\\.\\d+)?")){
                                 if (Objects.equals((phoneNumber), "")) {
                                     toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
                                     toast.show();
@@ -324,17 +324,19 @@ public class MainController implements SafeTapListener {
                                     toast = Toast.makeText(rootActivity.getContext(), "Numero non valido.", Toast.LENGTH_LONG);
                                     toast.show();
                                 } else {
-                                    if (Objects.equals(smsMsg, "")) {
+                                    if(Objects.equals(smsMsg, "")){
                                         toast = Toast.makeText(rootActivity.getContext(), "Messaggio vuoto.", Toast.LENGTH_LONG);
                                         toast.show();
-                                    } else {
+                                    }
+                                    else {
                                         SmsManager sms = SmsManager.getDefault();
                                         sms.sendTextMessage(phoneNumber, null, smsMsg, null, null);
                                         toast = Toast.makeText(rootActivity.getContext(), "Messaggio inviato.", Toast.LENGTH_LONG);
                                         toast.show();
                                     }
                                 }
-                            } else {
+                            }
+                            else {
                                 toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
                                 toast.show();
                             }

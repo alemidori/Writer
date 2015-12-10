@@ -21,6 +21,7 @@ import java.util.Objects;
 
 
 public class RootActivity extends Activity {
+    private String contentInputSection;
     private Configurations configurations;
     private String toccoDefault, audioDefault;
     private static RootActivity rootActivity;
@@ -167,8 +168,8 @@ public class RootActivity extends Activity {
             sb.setTypeface(font);
         }
         textView = (TextView) findViewById(R.id.textView);
-
         inputSection.setTypeface(font);
+        inputSection.setText(contentInputSection);
         nextButton.setTypeface(font);
         textView.setTypeface(font);
         inputSection.setOnTouchListener(otl);
@@ -184,6 +185,7 @@ public class RootActivity extends Activity {
     };
 
     public void configureLayout(LeafNode lf) {
+        contentInputSection = inputSection.getText().toString();
         switch ((String) lf.getAttribute()) {
             case "2x1":
                 layoutValue = 1;
@@ -204,6 +206,9 @@ public class RootActivity extends Activity {
 
     //distribuisce gli elementi della lista nei pulsanti in base al layout
     public List<TreeNode> spreadInButtons(List<TreeNode> list, int numButt) {
+        for (SafeButton b : buttonList) {
+            b.setClickable(true);
+        }
         List<TreeNode> subList;
         lastButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
         if (numButt > 1) {
@@ -241,15 +246,13 @@ public class RootActivity extends Activity {
                         nextButton.setText("Avanti");
 
                     } else {
-                        if (Objects.equals(textView.getText(), "Inserisci indirizzo e-mail")){
+                        if (Objects.equals(textView.getText(), "Inserisci indirizzo e-mail")) {
                             lastButton.setText("Vai a Invia e-mail");
                             nextButton.setText("Avanti");
-                        }
-                        else if(Objects.equals(textView.getText(), "Inserisci numero di telefono")){
+                        } else if (Objects.equals(textView.getText(), "Inserisci numero di telefono")) {
                             lastButton.setText("Vai a Invia sms");
                             nextButton.setText("Avanti");
-                        }
-                        else
+                        } else
                             lastButton.setText("Torna a " + nomeMenuPrec);
                     }
 
@@ -275,7 +278,6 @@ public class RootActivity extends Activity {
 
         return subList;
     }
-
 
 
     @Override

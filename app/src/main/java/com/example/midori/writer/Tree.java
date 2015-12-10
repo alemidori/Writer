@@ -249,14 +249,6 @@ public class Tree {
     }
 
 
-    public void deleteChar(String cs) {
-
-        CharSequence withoutLast = cs.subSequence(0, rootActivity.getInputSection().getText().length() - 1);
-        rootActivity.getInputSection().setText(withoutLast);
-        rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
-    }
-
-
     public boolean deletePeriod(String period) {
         Node n;
         int position = 0;
