@@ -52,7 +52,7 @@
             android:layout_margin="1dp"
             android:textColor="#ffffff"
             android:text="Avanti"
-            android:background="#494949"
+            android:background="@drawable/rounded_button_last"
             />
     </LinearLayout>
 

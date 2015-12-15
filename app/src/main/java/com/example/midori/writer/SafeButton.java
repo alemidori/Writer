@@ -113,11 +113,12 @@ public class SafeButton extends Button {
     //restituisce true se la durata è uguale o maggiore
     private boolean isSafeTap(MotionEvent event) {
         actualButton = this;
+        rootActivity = RootActivity.getInstanceRootActivity();
         Runnable runnable = new Runnable() {
             public void run() {
                 if (isPressed) {
                     if (!Objects.equals(actualButton.getText(), ""))
-                        actualButton.setBackgroundColor(Color.argb(255, 93, 93, 93));
+                        actualButton.setBackground(rootActivity.getDrawable(R.drawable.rounded_button_pressed));
                 }
 
             }
@@ -131,9 +132,9 @@ public class SafeButton extends Button {
                 break;
             case MotionEvent.ACTION_UP:
                 if (!Objects.equals(actualButton.getText(), "Avanti"))
-                    actualButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
+                    actualButton.setBackground(rootActivity.getDrawable(R.drawable.rounded_button));
                 else
-                    actualButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
+                    actualButton.setBackground(rootActivity.getDrawable(R.drawable.rounded_button_last));
                 if (isPressed) {
                     isPressed = false;
                     handler.removeCallbacks(runnable);

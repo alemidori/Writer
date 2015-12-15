@@ -4,12 +4,7 @@
     android:orientation="vertical"
     android:background="@drawable/gradient_background"
     android:padding="5dp">
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:src="@drawable/logo_e_nome_orange"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="20dp"/>
+
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="1dp"
@@ -64,7 +59,7 @@
             android:layout_margin="1dp"
             android:textColor="#ffffff"
             android:text="Avanti"
-            android:background="#494949"
+            android:background="@drawable/rounded_button_last"
             />
     </LinearLayout>
 

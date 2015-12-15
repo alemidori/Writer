@@ -36,7 +36,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -46,7 +46,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>
@@ -62,7 +62,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -72,7 +72,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>
@@ -89,7 +89,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -99,7 +99,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>
@@ -115,7 +115,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -125,7 +125,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:text="Avanti"
             android:textColor="#ffffff"
             android:textSize="20sp" />

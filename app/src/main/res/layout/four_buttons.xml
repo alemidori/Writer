@@ -6,12 +6,6 @@
     android:padding="5dp">
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:src="@drawable/logo_e_nome_orange"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="20dp"/>
-    <ImageView
-        android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="#ffffff" />
 
@@ -49,7 +43,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="30sp" />
 
@@ -60,7 +54,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="30sp" />
     </LinearLayout>
@@ -78,7 +72,7 @@
             android:maxWidth="@dimen/activity_horizontal_margin"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:textColor="#ffffff"
             android:textSize="30sp" />
 
@@ -90,7 +84,7 @@
             android:maxWidth="@dimen/activity_horizontal_margin"
             android:layout_margin="1dp"
             android:layout_weight="1"
-            android:background="#252525"
+            android:background="@drawable/rounded_button"
             android:text="Avanti"
             android:textColor="#ffffff"
             android:textSize="30sp" />

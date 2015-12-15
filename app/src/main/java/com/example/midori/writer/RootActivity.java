@@ -210,7 +210,7 @@ public class RootActivity extends Activity {
             b.setClickable(true);
         }
         List<TreeNode> subList;
-        lastButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
+        lastButton.setBackground(getDrawable(R.drawable.rounded_button));
         if (numButt > 1) {
             //se i selectable sono meno della lista
             if (list.size() >= numButt) {
@@ -220,7 +220,7 @@ public class RootActivity extends Activity {
                     i++;
                 }
                 nextButton.setText("Avanti");
-                nextButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
+                nextButton.setBackground(getDrawable(R.drawable.rounded_button_last));
             } else {
                 //se i selectable sono più della lista
                 for (SafeButton b : buttonList) {
@@ -238,7 +238,7 @@ public class RootActivity extends Activity {
                 if (Objects.equals(list.get(0).parent.data, "root")) {
                     lastButton.setText("");
                     nextButton.setText("");
-                    nextButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
+                    nextButton.setBackground(getDrawable(R.drawable.rounded_button));
                 } else {
                     String nomeMenuPrec = (String) list.get(0).parent.parent.data;
                     if (Objects.equals(nomeMenuPrec, "root")) {
@@ -259,10 +259,10 @@ public class RootActivity extends Activity {
                     System.out.println("PRIMO ELEMENTO LISTA " + list.get(0).data);
                     if (list.get(0).parent.children.size() < numButt) {
                         nextButton.setText("");
-                        nextButton.setBackgroundColor(Color.argb(255, 37, 37, 37));
+                        nextButton.setBackground(getDrawable(R.drawable.rounded_button));
                     } else
                         nextButton.setText("Avanti");
-                    lastButton.setBackgroundColor(Color.argb(255, 73, 73, 73));
+                    lastButton.setBackground(getDrawable(R.drawable.rounded_button_last));
                 }
             }
 

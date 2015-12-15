@@ -2,6 +2,7 @@ package com.example.midori.writer;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.telephony.SmsManager;
@@ -21,7 +22,7 @@ public class MainController implements SafeTapListener {
     private TextView textView;
     private static MainController instance;
     private RootActivity rootActivity;
-    private String smsMsg;
+    private String smsMsg, textButton;
     private SafeButton next;
     private List<TreeNode> subList;
     private TreeNode actualParent, rootTreeNode;
@@ -40,7 +41,7 @@ public class MainController implements SafeTapListener {
     }
 
     public void initialize() {
-        smsMsg =null;
+        smsMsg = null;
         rootActivity = RootActivity.getInstanceRootActivity();
         String durationTouch = rootActivity.getTocco();
         System.out.println("durationTouch " + durationTouch);
@@ -97,14 +98,14 @@ public class MainController implements SafeTapListener {
     @Override
     public boolean onSafeTap(SafeButton safeButton) {
 
-        String textButton = (String) safeButton.getText();
-        System.out.println("TESTO PULSANTE "+textButton);
+        textButton = (String) safeButton.getText();
+        System.out.println("TESTO PULSANTE " + textButton);
 
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
 
             if (rootActivity.getLastButton().getText().toString().startsWith("Torna a")) {
-                System.out.println("TESTO PULSANTE "+textButton);
+                System.out.println("TESTO PULSANTE " + textButton);
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
             } else if (rootActivity.getLastButton().getText().toString().startsWith("Vai a Invia sms")) {
@@ -121,10 +122,10 @@ public class MainController implements SafeTapListener {
                         rootActivity.getLastButton().setText("Torna al Menu principale");
                     else
                         rootActivity.getLastButton().setText("Torna a " + actualParent.parent.data);
-                    rootActivity.getLastButton().setBackgroundColor(Color.argb(255, 73, 73, 73));
+                    rootActivity.getLastButton().setBackground(rootActivity.getDrawable(R.drawable.rounded_button_last));
                 }
             } else {
-                System.out.println("TESTO PULSANTE "+textButton);
+                System.out.println("TESTO PULSANTE " + textButton);
                 for (SafeButton b : rootActivity.getButtonList()) {
                     b.setText("");
                 }
@@ -196,6 +197,8 @@ public class MainController implements SafeTapListener {
 
         switch (lf.getAction()) {
             case LeafNode.ACTION_INSERT_TEXT:
+                if (Objects.equals(rootActivity.getConfigurations().preferences.getString("audio", null), "Scandisci lettere e caratteri"))
+                    tts.speak(textButton, TextToSpeech.QUEUE_FLUSH, null, "play_textbutton");
 
                 if (!(lf.getAttribute() instanceof CharSequence))
                     new Exception("Formato errato").printStackTrace();
@@ -230,8 +233,7 @@ public class MainController implements SafeTapListener {
                     new Exception("Formato errato").printStackTrace();
                 else {
                     rootActivity.getConfigurations().setConfigurations("audio", (String) lf.getAttribute());
-
-                    toast = Toast.makeText(rootActivity.getContext(), "Funzione non disponibile.", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(rootActivity.getContext(), "Audio settato a " + lf.getAttribute(), Toast.LENGTH_LONG);
                     toast.show();
                 }
                 break;
@@ -268,10 +270,10 @@ public class MainController implements SafeTapListener {
                             }
                             break;
                         case "Cancella":
-                            if (rootActivity.getInputSection().getText().length() > 0){
-                                    String withoutLast = rootActivity.getInputSection().getText().toString().substring(0, rootActivity.getInputSection().getText().toString().length() - 1);
-                                    rootActivity.getInputSection().setText(withoutLast);
-                                    rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
+                            if (rootActivity.getInputSection().getText().length() > 0) {
+                                String withoutLast = rootActivity.getInputSection().getText().toString().substring(0, rootActivity.getInputSection().getText().toString().length() - 1);
+                                rootActivity.getInputSection().setText(withoutLast);
+                                rootActivity.getInputSection().setSelection(rootActivity.getInputSection().getText().length());
                             }
 
                             break;
@@ -300,10 +302,11 @@ public class MainController implements SafeTapListener {
                             }
                             break;
                         case "Inserisci indirizzo":
-                            CharSequence emailMsg = rootActivity.getInputSection().getText();
-                            rootActivity.getTextView().setText("Inserisci indirizzo e-mail");
-                            rootActivity.getInputSection().setText("");
-                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Alfabeto e simboli").getTreeNode().children, numSelectableButton);
+                            //TODO
+//                            CharSequence emailMsg = rootActivity.getInputSection().getText();
+//                            rootActivity.getTextView().setText("Inserisci indirizzo e-mail");
+//                            rootActivity.getInputSection().setText("");
+//                            subList = rootActivity.spreadInButtons(Tree.getInstance().getNodeFromText("Alfabeto e simboli").getTreeNode().children, numSelectableButton);
                             break;
                         case "Inserisci numero":
                             smsMsg = rootActivity.getInputSection().getText().toString();
@@ -316,7 +319,7 @@ public class MainController implements SafeTapListener {
                             break;
                         case "Invia sms":
                             String phoneNumber = rootActivity.getInputSection().getText().toString();
-                            if(phoneNumber.matches("-?\\d+(\\.\\d+)?")){
+                            if (phoneNumber.matches("-?\\d+(\\.\\d+)?")) {
                                 if (Objects.equals((phoneNumber), "")) {
                                     toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
                                     toast.show();
@@ -324,19 +327,17 @@ public class MainController implements SafeTapListener {
                                     toast = Toast.makeText(rootActivity.getContext(), "Numero non valido.", Toast.LENGTH_LONG);
                                     toast.show();
                                 } else {
-                                    if(Objects.equals(smsMsg, "")){
+                                    if (Objects.equals(smsMsg, "")) {
                                         toast = Toast.makeText(rootActivity.getContext(), "Messaggio vuoto.", Toast.LENGTH_LONG);
                                         toast.show();
-                                    }
-                                    else {
+                                    } else {
                                         SmsManager sms = SmsManager.getDefault();
                                         sms.sendTextMessage(phoneNumber, null, smsMsg, null, null);
                                         toast = Toast.makeText(rootActivity.getContext(), "Messaggio inviato.", Toast.LENGTH_LONG);
                                         toast.show();
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 toast = Toast.makeText(rootActivity.getContext(), "Nessun numero inserito.", Toast.LENGTH_LONG);
                                 toast.show();
                             }
