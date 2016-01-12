@@ -1,0 +1,136 @@
+{
+  "root": {
+    "Menu": {
+      "Alfabeto - Simboli - Numeri": {
+        "Alfabeto - Simboli": {
+          "Alfabeto": {
+            "A-G": {
+              "A-F": {
+                "a": "A",
+                "b": "B",
+                "c": "C",
+                "d": "D",
+                "e": "E",
+                "f": "F"
+              },
+              "G-N": {
+                "g": "G",
+                "h": "H",
+                "i": "I",
+                "l": "L",
+                "m": "M",
+                "n": "N"
+              }
+            },
+            "O-ù": {
+              "O-U": {
+                "o": "O",
+                "p": "P",
+                "q": "Q",
+                "r": "R",
+                "s": "S",
+                "t": "T",
+                "u": "U"
+              },
+              "V-ù": {
+                "v": "V",
+                "z": "Z",
+                "à": "à",
+                "è": "è",
+                "é": "é",
+                "ì": "ì",
+                "ò": "ò",
+                "ù": "ù"
+              }
+            }
+          },
+          "Simboli": {
+            "spazio-!": {
+              "(spazio)": " ",
+              ",": ",",
+              "(": "(",
+              ")": ")",
+              "@": "@",
+              "!": "!"
+            },
+            "?-%": {
+              "?": "?",
+              "'": "'",
+              "-": "-",
+              ":": ":",
+              "_": "_",
+              "%": "&"
+            }
+          }
+        },
+        "Numeri": {
+          "0-4": {
+            "0": "0",
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4"
+          },
+          "5-9": {
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9"
+          }
+        }
+      },
+      "Frasi - Azioni": {
+        "Le mie frasi": {
+          "Ciao!": "ciao",
+          "Buongiorno!": "buongiorno",
+          "Arrivederci, grazie.": "arrivederci"
+        },
+        "Azioni": {
+          "Salva-Riproduci-Cancella": {
+            "Salva-Riproduci": {
+              "Salva": "salva",
+              "Riproduci": "riproduci"
+            },
+            "Cancella": "cancella"
+          },
+          "Reset-Elimina-Invia email-Invia sms": {
+            "Reset - Elimina": {
+              "Cancella tutto": "cancella tutto",
+              "Elimina frase": "elimina frase"
+            },
+            "Invia email-Invia sms": {
+              "Invia come e-mail": {
+                "Inserisci indirizzo": "inserisci indirizzo",
+                "Invia e-mail": "invia e-mail"
+              },
+              "Invia come sms": {
+                "Inserisci numero": "inserisci numero",
+                "Invia sms": "invia sms"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Configura": {
+      "Tocco - Audio": {
+        "Tocco": {
+          "Disabilita - Breve": {
+            "Disabilita": "disabilita",
+            "Breve": "breve",
+          },
+          "Medio - Lungo": {
+            "Medio": "medio",
+            "Lungo": "lungo"
+          }
+        },
+        "Audio": {
+          "Muto": "muto",
+          "Scandisci lettere e caratteri": "scandisci lettere e caratteri"
+        }
+      },
+      "Layout": "layout"
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "root": {
+    "Menu": {
+      "Alfabeto - Simboli": {
+        "Alfabeto": {
+          "A-D": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D"
+          },
+          "E-H": {
+            "e": "E",
+            "f": "F",
+            "g": "G",
+            "h": "H"
+          },
+          "I-N": {
+            "i": "I",
+            "l": "L",
+            "m": "M",
+            "n": "N"
+          },
+          "O-R": {
+            "o": "O",
+            "p": "P",
+            "q": "Q",
+            "r": "R"
+          },
+          "S-V": {
+            "s": "S",
+            "t": "T",
+            "u": "U",
+            "v": "V"
+          },
+          "Z-é": {
+            "z": "Z",
+            "à": "à",
+            "è": "è",
+            "é": "é"
+          },
+          "ì-ù": {
+            "ì": "ì",
+            "ò": "ò",
+            "ù": "ù"
+          }
+        },
+        "Simboli": {
+          "spazio-)": {
+            "(spazio)": " ",
+            ",": ",",
+            "(": "(",
+            ")": ")"
+          },
+          "@-?": {
+            "@": "@",
+            "!": "!",
+            "?": "?"
+          },
+          "'-%": {
+            "'": "'",
+            "-": "-",
+            ":": ":",
+            "_": "_",
+            "%": "&"
+          }
+        }
+      },
+      "Numeri": {
+        "0-3": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3"
+        },
+        "4-6": {
+          "4": "4",
+          "5": "5",
+          "6": "6"
+        },
+        "7-9": {
+          "7": "7",
+          "8": "8",
+          "9": "9"
+        }
+      },
+      "Frasi - Azioni": {
+        "Le mie frasi": {
+          "Ciao!": "ciao",
+          "Buongiorno!": "buongiorno",
+          "Arrivederci, grazie.": "arrivederci"
+        },
+        "Azioni": {
+          "Salva - Riproduci": {
+            "Salva": "salva",
+            "Riproduci": "riproduci"
+          },
+          "Cancella - Reset": {
+            "Cancella": "cancella",
+            "Cancella tutto": "cancella tutto"
+          },
+          "Elimina - Invia email - Invia sms": {
+            "Elimina frase": "elimina frase",
+            "Invia come e-mail": {
+              "Inserisci indirizzo": "inserisci indirizzo",
+              "Invia e-mail": "invia e-mail"
+            },
+            "Invia come sms": {
+              "Inserisci numero": "inserisci numero",
+              "Invia sms": "invia sms"
+            }
+          }
+        }
+      }
+    },
+    "Configura": {
+      "Tocco": {
+        "Disabilita": "disabilita",
+        "Breve": "breve",
+        "Medio": "medio",
+        "Lungo": "lungo"
+      },
+      "Audio": {
+        "Muto": "muto",
+        "Scandisci lettere e caratteri": "scandisci lettere e caratteri"
+      },
+      "Layout": "layout"
+    }
+  }
+}

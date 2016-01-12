@@ -11,13 +11,16 @@ import com.google.gson.JsonParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +31,7 @@ import java.util.Objects;
  */
 public class Tree {
     private static Tree instance;
-    private String obj;
+    private String obj,folder;
     private String jsonString;
     private JsonObject rootJsonObj;
     private JSONObject rootJsonOBJ, frasiJsonOBJ;
@@ -51,12 +54,14 @@ public class Tree {
         rootActivity = RootActivity.getInstanceRootActivity();
         gson = new Gson();
         jsonParser = new JsonParser();
-        String path = rootActivity.getFilesDir().getAbsolutePath() + "/json_tree_internal";
+        //aggiunto folder (/phraser/) nella cartella dell'internal storage
+        folder = rootActivity.getContext().getFilesDir().getAbsolutePath()+"/phraser/";
+        String path = rootActivity.getFilesDir().getAbsolutePath() + folder+"/json_tree_internal";
         File file = new File(path);
         if (file.exists()) {
             try {
-                br = new BufferedReader(new InputStreamReader(rootActivity.openFileInput("json_tree_internal")));
-                reader = new JsonReader(new InputStreamReader(rootActivity.openFileInput("json_tree_internal")));
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+                reader = new JsonReader(new InputStreamReader(new FileInputStream(file)));
                 System.out.println("TROVATO! IN: " + rootActivity.getFilesDir().getAbsolutePath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -70,12 +75,29 @@ public class Tree {
 
 
         writeJsonString();
+
+        //stampo il contenuto di /phraser
+        File f = new File(folder);
+        System.out.println(folder + "**********JJHVGCFXDFCHVJBKNLJBHVBCXFGCTFYUGKJBM VXDFGCHVJB");
+        File files[] = f.listFiles();
+        System.out.println("STAMPA FILE IN PHRASER**************");
+        System.out.println("Numero file: " + files.length);
+        for (File file1 : files) {
+            System.out.println("FileName:" + file1.getName());
+        }
+        //________________________________
+
         parseJSON();
 
     }
 
 
     private void writeJsonString() {
+
+        //File file = new File(folder);
+        //file.mkdirs();
+        String newFile = folder+"json_tree_internal";
+
         jsonString = "";
         String jsonLine;
         try {
@@ -85,9 +107,13 @@ public class Tree {
             }
 
             System.out.println(jsonString);
-            FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
-            fos.write(jsonString.getBytes());
-            fos.close();
+            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(newFile,true));
+            outputStream.write(jsonString.getBytes());
+            outputStream.flush();
+            outputStream.close();
+            //FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+            //fos.write(jsonString.getBytes());
+            //fos.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,7 +214,7 @@ public class Tree {
     public boolean isNodeInList(String s) {
         boolean toReturn = false;
         for (Node n : nodeList) {
-            if(Objects.equals(n.getTreeNode().data, s)){
+            if (Objects.equals(n.getTreeNode().data, s)) {
                 toReturn = true;
             }
         }
