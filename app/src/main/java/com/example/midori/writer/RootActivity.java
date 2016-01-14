@@ -180,6 +180,7 @@ public class RootActivity extends Activity {
         textView.setTypeface(font);
         inputSection.setOnTouchListener(otl);
 
+
         MainController.getInstance().initialize();
 
     }
@@ -208,6 +209,8 @@ public class RootActivity extends Activity {
 
             JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(path)));
             Tree.getInstance().parseJSON(reader);
+            //Tree.getInstance().setParentsOfFrasi();
+            MainController.getInstance().setNameFileJson(((String)lf.getAttribute()));
 
             configurations.setConfigurations("layout", String.valueOf(layoutValue));
 

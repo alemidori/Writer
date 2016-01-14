@@ -10,6 +10,11 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -27,6 +32,7 @@ public class MainController implements SafeTapListener {
     private List<TreeNode> subList;
     private TreeNode actualParent, rootTreeNode;
     private int numSelectableButton;
+    private String nameFileJson,jsonString;
 
 
     public static MainController getInstance() {
@@ -40,12 +46,29 @@ public class MainController implements SafeTapListener {
         fillFolder.fill();
         Node root = Tree.getInstance().getNodeFromText("root");
         rootTreeNode = root.getTreeNode();
+        nameFileJson = "due_base";
 
     }
 
     public void initialize() {
-        smsMsg = null;
+        jsonString = "";
         rootActivity = RootActivity.getInstanceRootActivity();
+        String folder = rootActivity.getContext().getFilesDir().getAbsolutePath();
+        try {
+            String path = folder + File.separator + nameFileJson;
+            System.out.println(path);
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String jsonLine;
+            while ((jsonLine = br.readLine()) != null) {
+                jsonString += jsonLine + '\n';
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        smsMsg = null;
+
         String durationTouch = rootActivity.getTocco();
         System.out.println("durationTouch " + durationTouch);
 
@@ -95,6 +118,18 @@ public class MainController implements SafeTapListener {
 
     }
 
+    public void setNameFileJson(String name){
+        nameFileJson = name;
+    }
+    public String getNameFileJson(){
+        return nameFileJson;
+    }
+    public String getJsonString(){
+        return  jsonString;
+    }
+    public void setJsonString(String string){
+        jsonString = string;
+    }
 
     //**********************************************************************************************************
     //ON SAFE TAP

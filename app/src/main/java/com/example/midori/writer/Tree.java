@@ -1,6 +1,7 @@
 package com.example.midori.writer;
 
 import android.content.Context;
+import android.content.pm.LabeledIntent;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
@@ -34,12 +35,11 @@ import java.util.Objects;
 public class Tree {
     private static Tree instance;
     private String obj, folder;
-    ;
     private String jsonString;
     private JsonObject rootJsonObj;
     private JSONObject rootJsonOBJ, frasiJsonOBJ;
     private JsonReader reader;
-    private TreeNode lastParentNode;
+    private TreeNode lastParentNode,frasiNode;
     private List<Node> nodeList = new ArrayList<>();
     private RootActivity rootActivity;
     private BufferedReader br;
@@ -48,7 +48,9 @@ public class Tree {
     private List<String> jsonList;
     private List<Node> listTreeNode;
     private List<JsonReader> jsonReaderList;
-    private    Map<String, JsonReader> mapStringReader;
+    private Map<String, JsonReader> mapStringReader;
+    private List<String> listOfParent;
+    private List<JSONObject> jsonObjectList;
 
     public static Tree getInstance() {
         if (instance == null)
@@ -75,7 +77,9 @@ public class Tree {
             e.printStackTrace();
         }
         listTreeNode = parseJSON(reader);
+        setParentsOfFrasi();
         System.out.println("abababababababababababaababa");
+
 //        //aggiunto folder (/phraser/) nella cartella dell'internal storage
 //        folder = rootActivity.getContext().getFilesDir().getAbsolutePath()+"/phraser/";
 //        String path = rootActivity.getFilesDir().getAbsolutePath() + folder+"/json_tree_internal";
@@ -111,7 +115,19 @@ public class Tree {
 
     }
 
-//    public void writeJsonStrings(BufferedReader bufferedReader) {
+//    public void writeJsonStrings(String filename) {
+//        try {
+//            String path = folder + File.separator + filename;
+//            System.out.println(path);
+//            File file = new File(path);
+//            br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+//            String jsonLine;
+//            while ((jsonLine = br.readLine()) != null) {
+//                jsonString += jsonLine + '\n';
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //
 //        jsonString = "";
 //        String jsonLine;
@@ -128,12 +144,15 @@ public class Tree {
 //        }
 //    }
 
-    public void setMapStringsAndReader(Map<String,JsonReader> map) {
-      mapStringReader = map;
+    public void setMapStringsAndReader(List<String> stringList, List<JsonReader> jsonReaders) {
+        jsonList = stringList;
+        jsonReaderList = jsonReaders;
     }
 
     //crea le istanze dei Treenode a partire dal json
     public List<Node> parseJSON(JsonReader jsonReader) {
+
+
         reader = jsonReader;
         boolean flag = false;
         try {
@@ -220,7 +239,7 @@ public class Tree {
                                     break;
                             }
                             lastGroup = lastGroup.parent;
-                            System.out.print("lastGroup" + lastGroup.data);
+//                            System.out.print("lastGroup" + lastGroup.data);
                         }
 
                         nodeList.add(new LeafNode(childNode, action, obj));
@@ -240,6 +259,19 @@ public class Tree {
             e.printStackTrace();
         }
         return nodeList;
+
+    }
+
+    public void setParentsOfFrasi(){
+        listOfParent = new ArrayList<>();
+        jsonObjectList = new ArrayList<>();
+        frasiNode = getNodeFromText("Le mie frasi").getTreeNode();
+        //System.out.println("frasi "+frasiNode.data);
+
+        while (!Objects.equals(frasiNode.parent.data, "root")) {
+            listOfParent.add((String) frasiNode.parent.data);
+            frasiNode.parent = frasiNode.parent.parent;
+        }
     }
 
     public void addLayoutFromFolder(TreeNode t) {
@@ -249,7 +281,7 @@ public class Tree {
         File file[] = f.listFiles();
         for (File fl : file) {
             layout = t.addChild(fl.getName());
-            nodeList.add(new LeafNode(layout, 3, fl.getName()));
+            listTreeNode.add(new LeafNode(layout, 3, fl.getName()));
         }
     }
 
@@ -263,9 +295,9 @@ public class Tree {
         return toReturn;
     }
 
-    public Node getNodeFromText(String s, List<Node> list) {
+    public Node getNodeFromText(String s) {
         Node toReturn = null;
-        for (Node n : list) {
+        for (Node n : listTreeNode) {
             if (Objects.equals(n.getTreeNode().data, s)) {
                 toReturn = n;
             }
@@ -274,57 +306,57 @@ public class Tree {
     }
 
     public boolean savePeriod(String period) {
-        Map<String,List<Node>> mapStringNodeList = new HashMap<>();
-        List<Node> list;
+        //Map<String,List<Node>> mapStringNodeList = new HashMap<>();
+        //List<Node> list;
         boolean toReturn;
-        List<TreeNode> tList = new ArrayList<>();
+        //List<TreeNode> tList = new ArrayList<>();
         if (Objects.equals(period, ""))
             toReturn = false;
         else {
-            for (Map.Entry<String, JsonReader> entry : mapStringReader.entrySet()) {
-                list = parseJSON(entry.getValue());
-                mapStringNodeList.put(entry.getKey(),list);
-
-            }
-            for (Map.Entry<String,List<Node>> entry: mapStringNodeList.entrySet()) {
-
-                try {
-                    rootJsonOBJ = new JSONObject(entry.getKey());
-                    TreeNode rootNode = getNodeFromText("root", entry.getValue()).getTreeNode();
-                    TreeNode tNode = rootNode;
-                    while (!tNode.children.isEmpty()) {
-                        for (TreeNode t : (List<TreeNode>) tNode.children) {
-                            if (Objects.equals(t.data, "Le mie frasi")) {
-                                while (!Objects.equals(t.parent.data, "root")){
-                                    tList.add(t.parent);
-                                }
-                            }
-                            tNode = t;
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
+//            for (Map.Entry<String, JsonReader> entry : mapStringReader.entrySet()) {
+//                list = parseJSON(entry.getValue());
+//                mapStringNodeList.put(entry.getKey(),list);
+//
+//            }
 
             try {
 
+                jsonString = MainController.getInstance().getJsonString();
+
+                System.out.println(jsonString);
+                rootJsonOBJ = new JSONObject(jsonString);
                 JSONObject rootObj = rootJsonOBJ.getJSONObject("root");
-                JSONObject mainObj = rootObj.getJSONObject("Menu");
-                frasiJsonOBJ = mainObj.getJSONObject("Le mie frasi");
+
+                System.out.println("********************ASHIASHASHSA" + listOfParent);
+
+                int i = listOfParent.size() - 1;
+                JSONObject first = rootObj;
+                int j = 0;
+                while (i >= 0) {
+                    jsonObjectList.add(first.getJSONObject(listOfParent.get(i)));
+                    first = jsonObjectList.get(j);
+                    System.out.println(jsonObjectList);
+                    j++;
+                    i--;
+                }
+                System.out.println(jsonObjectList.size());
+                frasiJsonOBJ = jsonObjectList.get(jsonObjectList.size() - 1).getJSONObject("Le mie frasi");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
             try {
+
                 frasiJsonOBJ.put(period, period);
+                System.out.println(frasiJsonOBJ);
                 rootJsonObj = (JsonObject) jsonParser.parse(rootJsonOBJ.toString());
                 jsonString = gson.toJson(rootJsonObj);
+                MainController.getInstance().setJsonString(jsonString);
                 System.out.println(jsonString);
 
                 try {
-                    FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+                    FileOutputStream fos = rootActivity.openFileOutput(MainController.getInstance().getNameFileJson(), Context.MODE_PRIVATE);
                     fos.write(jsonString.getBytes());
                     fos.close();
 
@@ -337,9 +369,9 @@ public class Tree {
                 e.printStackTrace();
             }
 
-            TreeNode frasi = getNodeFromText("Le mie frasi").getTreeNode();
-            TreeNode newPeriod = frasi.addChild(period);
-            nodeList.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
+
+            TreeNode newPeriod = frasiNode.addChild(period);
+            listTreeNode.add(new LeafNode(newPeriod, LeafNode.ACTION_INSERT_TEXT, newPeriod.data));
             toReturn = true;
         }
         return toReturn;
@@ -350,7 +382,7 @@ public class Tree {
         Node n;
         int position = 0;
         boolean isIn = false;
-        for (Iterator<Node> iterator = nodeList.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Node> iterator = listTreeNode.iterator(); iterator.hasNext(); ) {
             n = iterator.next();
             if (n.getTreeNode().data.equals(period)) {
                 List<TreeNode> list = n.getTreeNode().parent.children;
@@ -364,10 +396,19 @@ public class Tree {
                 iterator.remove();
 
                 try {
-                    rootJsonOBJ = new JSONObject(jsonString);
+                    rootJsonOBJ = new JSONObject("root");
                     JSONObject rootObj = rootJsonOBJ.getJSONObject("root");
-                    JSONObject mainObj = rootObj.getJSONObject("Menu");
-                    frasiJsonOBJ = mainObj.getJSONObject("Le mie frasi");
+
+                    int i = listOfParent.size() - 1;
+                    JSONObject first = rootObj;
+                    int j = 0;
+                    while (i >= 0) {
+                        jsonObjectList.add(first.getJSONObject(listOfParent.get(i)));
+                        first = jsonObjectList.get(j);
+                        j++;
+                        i--;
+                    }
+                    frasiJsonOBJ = jsonObjectList.get(jsonObjectList.size() - 1).getJSONObject("Le mie frasi");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -376,7 +417,7 @@ public class Tree {
                 jsonString = gson.toJson(rootJsonObj);
 
                 try {
-                    FileOutputStream fos = rootActivity.openFileOutput("json_tree_internal", Context.MODE_PRIVATE);
+                    FileOutputStream fos = rootActivity.openFileOutput(MainController.getInstance().getNameFileJson(), Context.MODE_PRIVATE);
                     fos.write(jsonString.getBytes());
                     fos.close();
 

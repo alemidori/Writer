@@ -72,7 +72,7 @@ public class FillFolder {
 
                 // Use that if you just need the file name
                 String filename = field.getName();
-                System.out.println("PAPAPAPAPA"+filename);
+
                 String path = folder + File.separator + filename;
                 System.out.println(path);
                 File file = new File(path);
@@ -93,7 +93,7 @@ public class FillFolder {
                         e.printStackTrace();
                     }
                 } else {
-                    System.out.println("CACACACACA"+filename);
+
                     InputStream in = rootActivity.getResources().openRawResource(rid);
                     InputStream in2 = rootActivity.getResources().openRawResource(rid);
                     br = new BufferedReader(new InputStreamReader(in));
@@ -102,7 +102,6 @@ public class FillFolder {
                         String jsonLine;
                         while ((jsonLine = br.readLine()) != null) {
                             jsonString += jsonLine + '\n';
-                            System.out.println("line json\n" + jsonLine);
                         }
                         jsonList.add(jsonString);
                         jsonReaderList.add(reader);
@@ -130,6 +129,7 @@ public class FillFolder {
 
 
         Tree.getInstance().setMapStringsAndReader(jsonList, jsonReaderList);
+
     }
 
 
