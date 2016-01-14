@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -15,6 +16,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -185,23 +191,31 @@ public class RootActivity extends Activity {
     };
 
     public void configureLayout(LeafNode lf) {
-        contentInputSection = inputSection.getText().toString();
-        switch ((String) lf.getAttribute()) {
-            case "2x1":
+        try {
+            contentInputSection = inputSection.getText().toString();
+
+            if (lf.getAttribute().toString().startsWith("due")) {
                 layoutValue = 1;
-                break;
-            case "2x2":
+            } else if (lf.getAttribute().toString().startsWith("quattro")) {
                 layoutValue = 2;
-                break;
-            case "4x2":
+            } else if (lf.getAttribute().toString().startsWith("otto")) {
                 layoutValue = 3;
-                break;
-            default:
-                layoutValue = 4;
-                break;
+            } else {
+                layoutValue = 1;
+            }
+
+            String path = getContext().getFilesDir().getAbsolutePath()+ "/"+lf.getAttribute();
+
+            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(path)));
+            Tree.getInstance().parseJSON(reader);
+
+            configurations.setConfigurations("layout", String.valueOf(layoutValue));
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        configurations.setConfigurations("layout", String.valueOf(layoutValue));
         this.recreate();
+
     }
 
     //distribuisce gli elementi della lista nei pulsanti in base al layout

@@ -22,7 +22,9 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alessandra on 16/12/15.
@@ -30,7 +32,6 @@ import java.util.List;
 public class FillFolder {
     private static Tree instance;
     private String obj, folder;
-    private String jsonString;
     private JsonObject rootJsonObj;
     private JSONObject rootJsonOBJ, frasiJsonOBJ;
     private JsonReader reader;
@@ -39,22 +40,30 @@ public class FillFolder {
     private RootActivity rootActivity;
     private BufferedReader br;
     private Gson gson;
+    private List<JsonReader> jsonReaderList;
+    private List<String> jsonList;
     private JsonParser jsonParser;
 
-    public void fill() {
-        jsonString = "";
-        String jsonLine;
+
+    public FillFolder() {
         rootActivity = RootActivity.getInstanceRootActivity();
         gson = new Gson();
         jsonParser = new JsonParser();
-        folder = rootActivity.getContext().getFilesDir().getAbsolutePath() + "/phraser/";
+        folder = rootActivity.getContext().getFilesDir().getAbsolutePath();
+        jsonReaderList = new ArrayList<>();
+        jsonList = new ArrayList<>();
+    }
 
-
+    public void fill() {
         // loop for every file in raw folder
         Field[] fields = R.raw.class.getFields();
+        Map<String, JsonReader> mapStringReader = new HashMap<>();
         try {
+            int rid = 0;
+            int numFiles = 0;
             for (Field field : fields) {
-                int rid = 0;
+                numFiles++;
+                String jsonString = "";
                 try {
                     rid = field.getInt(field);
                 } catch (IllegalAccessException e) {
@@ -63,44 +72,68 @@ public class FillFolder {
 
                 // Use that if you just need the file name
                 String filename = field.getName();
-                String path = folder + filename;
+                System.out.println("PAPAPAPAPA"+filename);
+                String path = folder + File.separator + filename;
+                System.out.println(path);
                 File file = new File(path);
+                System.out.println(file.getName());
                 if (file.exists()) {
                     try {
                         br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
                         reader = new JsonReader(new InputStreamReader(new FileInputStream(file)));
                         System.out.println("TROVATO! IN: " + rootActivity.getFilesDir().getAbsolutePath());
+                        String jsonLine;
+                        while ((jsonLine = br.readLine()) != null) {
+                            jsonString += jsonLine + '\n';
+                            System.out.println("line json\n" + jsonLine);
+                        }
+                        jsonList.add(jsonString);
+                        jsonReaderList.add(reader);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 } else {
+                    System.out.println("CACACACACA"+filename);
                     InputStream in = rootActivity.getResources().openRawResource(rid);
                     InputStream in2 = rootActivity.getResources().openRawResource(rid);
                     br = new BufferedReader(new InputStreamReader(in));
                     reader = new JsonReader(new InputStreamReader(in2));
                     try {
+                        String jsonLine;
                         while ((jsonLine = br.readLine()) != null) {
                             jsonString += jsonLine + '\n';
+                            System.out.println("line json\n" + jsonLine);
                         }
+                        jsonList.add(jsonString);
+                        jsonReaderList.add(reader);
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    FileOutputStream fos = rootActivity.openFileOutput(filename, 0);
+                    //OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(path));
+                    try {
+                        fos.write(jsonString.getBytes());
+                        fos.flush();
+                        fos.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, true));
-                    try {
-                        outputStream.write(jsonString.getBytes());
-                        outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
+        Tree.getInstance().setMapStringsAndReader(jsonList, jsonReaderList);
     }
+
+
+
 
     /**
 

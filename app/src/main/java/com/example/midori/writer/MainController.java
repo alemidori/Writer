@@ -36,8 +36,11 @@ public class MainController implements SafeTapListener {
     }
 
     private MainController() {
+        FillFolder fillFolder = new FillFolder();
+        fillFolder.fill();
         Node root = Tree.getInstance().getNodeFromText("root");
         rootTreeNode = root.getTreeNode();
+
     }
 
     public void initialize() {
@@ -104,7 +107,7 @@ public class MainController implements SafeTapListener {
         // NEXT BUTTON
         if (Objects.equals(safeButton, next)) {
 
-            if (rootActivity.getLastButton().getText().toString().startsWith("Torna a")) {
+            if (rootActivity.getLastButton().getText().toString().startsWith("Torna ")) {
                 System.out.println("TESTO PULSANTE " + textButton);
                 System.out.println("/////" + actualParent.data);
                 subList = rootActivity.spreadInButtons(actualParent.children, numSelectableButton);
@@ -118,10 +121,8 @@ public class MainController implements SafeTapListener {
                     for (SafeButton b : rootActivity.getButtonList()) {
                         b.setText("");
                     }
-                    if (Objects.equals(actualParent.parent.data, "root"))
-                        rootActivity.getLastButton().setText("Torna al Menu principale");
-                    else
-                        rootActivity.getLastButton().setText("Torna a " + actualParent.parent.data);
+
+                    rootActivity.getLastButton().setText("Torna indietro");
                     rootActivity.getLastButton().setBackground(rootActivity.getDrawable(R.drawable.rounded_button_last));
                 }
             } else {
@@ -169,7 +170,7 @@ public class MainController implements SafeTapListener {
             }
 
             //se è un nodo di goPrevLevel
-            else if ((safeButton.getText()).toString().startsWith("Torna a")) {
+            else if ((safeButton.getText()).toString().startsWith("Torna ")) {
 
                 subList = rootActivity.spreadInButtons(actualParent.parent.children, numSelectableButton);
                 actualParent = actualParent.parent;
@@ -189,12 +190,11 @@ public class MainController implements SafeTapListener {
             }
         }
 
-
         return false;
     }
 
     private void doAction(LeafNode lf) {
-
+        System.out.println("azione" + lf.getAction() + "azione");
         switch (lf.getAction()) {
             case LeafNode.ACTION_INSERT_TEXT:
                 if (Objects.equals(rootActivity.getConfigurations().preferences.getString("audio", null), "Scandisci lettere e caratteri"))
